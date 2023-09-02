@@ -25,7 +25,7 @@ To get started with the Shake to Torch and SOS Flutter app featuring toggle swit
 1. Clone this repository to your local machine.
 
 ```bash
-git clone <repository_url>
+git clone https://github.com/ABUBAKARL/shake_torch
 ```
 
 2. Navigate to the project directory.
