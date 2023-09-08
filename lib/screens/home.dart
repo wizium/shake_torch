@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shake_torch/main.dart';
-import '/Functions/sos.dart';
-import '/Functions/terminated_run.dart';
+import 'package:shake_torch/widget/containers.dart';
+import 'package:shake_torch/widget/listview.dart';
 
 bool? isBackgroundOn = false;
 bool isSosOn = false;
-bool isTorchOn = false;
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -24,88 +23,71 @@ class _HomePageState extends State<HomePage> {
     }
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.settings,
+            ),
+          )
+        ],
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Shake to Torch"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Icon(
-              isTorchOn
-                  ? Icons.flashlight_on_rounded
-                  : Icons.flashlight_off_rounded,
-              size: 150,
-              color: isTorchOn ? Colors.amber : Colors.black,
-              // color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 100.0),
-              child: Row(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("Assets/background.jpg"), fit: BoxFit.cover),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Transform.scale(
-                    scale: 3,
-                    child: RotatedBox(
-                      quarterTurns: 3,
-                      child: Switch(
-                        value: isBackgroundOn!,
-                        onChanged: (value) async {
-                          if (isBackgroundOn!) {
-                            flutterBackgroundService.invoke("terminate");
-                          } else {
-                            await flutterBackgroundService.startService();
-                            flutterBackgroundService.invoke("start");
-                          }
-                          setState(() {
-                            isBackgroundOn = value;
-                          });
-                          await sharedPreferences.setBool(
-                            "isOn",
-                            isBackgroundOn!,
-                          );
-                        },
-                      ),
-                    ),
+                  CustomContainer(
+                    width: width,
+                    height: height,
                   ),
-                  Transform.scale(
-                    scale: 3,
-                    child: RotatedBox(
-                      quarterTurns: 3,
-                      child: Switch(
-                        value: isSosOn,
-                        onChanged: (value) async {
-                          isSosOn = value;
-                          setState(() {});
-                          toggleSos(isSosOn, callbackIntent: () {
-                            setState(() {});
-                          });
-                        },
-                      ),
-                    ),
+                  CustomContainer(
+                    width: width,
+                    height: height,
                   ),
                 ],
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 100),
-              child: Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(
-                    Icons.vibration_rounded,
-                    color: Colors.green,
-                    size: 60,
+                  CustomContainer(
+                    width: width,
+                    height: height,
                   ),
-                  Icon(
-                    Icons.sos_outlined,
-                    color: Colors.red,
-                    size: 60,
+                  CustomContainer(
+                    width: width,
+                    height: height,
                   ),
                 ],
               ),
-            )
-          ],
+              const CustomListView(
+                title: "Shake Torch",
+                trailing: Icon(
+                  Icons.vibration_rounded,
+                  color: Colors.white,
+                  size: 60,
+                ),
+              ),
+              const CustomListView(
+                trailing: Icon(
+                  Icons.vibration_rounded,
+                  color: Colors.white,
+                  size: 60,
+                ),
+                title: "Screen Torch",
+              )
+            ],
+          ),
         ),
       ),
     );

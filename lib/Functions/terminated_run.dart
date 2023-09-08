@@ -6,16 +6,11 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart'
     show AndroidServiceInstance;
 import 'package:shake_torch/Functions/sos.dart';
-// import 'package:torch_light/torch_light.dart';
 import 'package:shake/shake.dart';
-
-import '/screens/home.dart';
-
 ShakeDetector shake = ShakeDetector.waitForStart(
   onPhoneShake: () async {
     torchController.initialize();
     await torchController.toggle();
-    isTorchOn = !isTorchOn;
   },
   shakeThresholdGravity: 9.5,
 );
