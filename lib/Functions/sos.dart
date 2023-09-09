@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shake_torch/screens/home.dart';
 import 'package:torch_controller/torch_controller.dart';
 
 TorchController torchController = TorchController();
@@ -9,6 +10,7 @@ void toggleSos(bool isSosOn, {required VoidCallback callbackIntent}) {
   if (isSosOn) {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       await torchController.toggle();
+      isTorchOn = !isTorchOn;
       callbackIntent();
     });
   } else {

@@ -3,9 +3,8 @@ import 'Functions/aos12permission.dart';
 import 'Functions/terminated_run.dart';
 import 'screens/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 
-late double height;
-late double width;
 late SharedPreferences sharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,40 +23,29 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    super.initState();
     askPermission();
     isBackgroundOn = sharedPreferences.getBool("isOn");
     setState(() {});
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
-    return MaterialApp(
-      title: "Shake torch",
-      darkTheme: ThemeData(
-        primarySwatch: Colors.amber,
-        useMaterial3: true,
-      ),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFD3A2F6),
-          primary: const Color(0xFFD3A2F6),
-          surface: const Color(0xff6ADF16).withOpacity(.8),
-          secondary: const Color(0xFFF9CCC7),
-          background: const Color(0xffE8FBFD),
-        ),
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(
-            fontFamily: "caveat",
-            color: Colors.white,
-            fontSize: 45,
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        return MaterialApp(
+          title: "Shake torch",
+          theme: ThemeData(
+            colorScheme: lightDynamic,
+            useMaterial3: true,
           ),
-        ),
-        useMaterial3: true,
-      ),
-      home: const HomePage(),
+          home: const HomePage(),
+        );
+      },
     );
   }
+}
+
+Future<Color?> dynamicColor() async {
+  return await DynamicColorPlugin.getAccentColor();
 }
