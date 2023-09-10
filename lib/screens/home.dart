@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shake_torch/main.dart';
 import '/Functions/sos.dart';
 import '/Functions/terminated_run.dart';
+import 'screen_torch.dart';
 
 bool? isBackgroundOn = false;
 bool isSosOn = false;
@@ -18,95 +19,135 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    if (isBackgroundOn == null) {
-      isBackgroundOn = false;
-      setState(() {});
-    }
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.settings,
+            ),
+          ),
+        ],
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Shake to Torch"),
+        centerTitle: true,
+        title: Text(
+          "Shake to Torch",
+          style: const TextStyle().merge(
+            const TextStyle(
+              fontSize: 30,
+            ),
+          ),
+        ),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Icon(
-              isTorchOn
-                  ? Icons.flashlight_on_rounded
-                  : Icons.flashlight_off_rounded,
-              size: 150,
-              color: isTorchOn ? Colors.amber : Colors.black,
-              // color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 100.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Transform.scale(
-                    scale: 3,
-                    child: RotatedBox(
-                      quarterTurns: 3,
-                      child: Switch(
-                        value: isBackgroundOn!,
-                        onChanged: (value) async {
-                          if (isBackgroundOn!) {
-                            flutterBackgroundService.invoke("terminate");
-                          } else {
-                            await flutterBackgroundService.startService();
-                            flutterBackgroundService.invoke("start");
-                          }
-                          setState(() {
-                            isBackgroundOn = value;
-                          });
-                          await sharedPreferences.setBool(
-                            "isOn",
-                            isBackgroundOn!,
-                          );
-                        },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  onTap: () async {
+                    setState(() {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const ScreenTorch();
+                          },
+                        ),
+                      );
+                    });
+                  },
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Image.asset(
+                        "assets/screenGlow.png",
+                        height: 145,
+                        width: 145,
                       ),
                     ),
                   ),
-                  Transform.scale(
-                    scale: 3,
-                    child: RotatedBox(
-                      quarterTurns: 3,
-                      child: Switch(
-                        value: isSosOn,
-                        onChanged: (value) async {
-                          isSosOn = value;
-                          setState(() {});
-                          toggleSos(isSosOn, callbackIntent: () {
-                            setState(() {});
-                          });
-                        },
-                      ),
+                ),
+                Card(
+                  child: IconButton(
+                    onPressed: () async {
+                      torchController.initialize();
+                      await torchController.toggle();
+                      isTorchOn = !isTorchOn;
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      isTorchOn
+                          ? Icons.flashlight_on_rounded
+                          : Icons.flashlight_off_rounded,
+                      size: 150,
+                      color: isTorchOn ? Colors.blue : null,
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+            Card(
+              child: ListTile(
+                subtitle: const Text(
+                  "Toggle Shake detection",
+                ),
+                subtitleTextStyle: Theme.of(context).textTheme.titleLarge,
+                title: const Text(
+                  "Shake",
+                ),
+                titleTextStyle: Theme.of(context).textTheme.headlineLarge,
+                trailing: Switch(
+                  value: isBackgroundOn!,
+                  onChanged: (value) async {
+                    {
+                      if (isBackgroundOn!) {
+                        flutterBackgroundService.invoke("terminate");
+                      } else {
+                        await flutterBackgroundService.startService();
+                        flutterBackgroundService.invoke("start");
+                      }
+                      setState(() {
+                        isBackgroundOn = !isBackgroundOn!;
+                      });
+                      await sharedPreferences.setBool(
+                        "isOn",
+                        isBackgroundOn!,
+                      );
+                    }
+                  },
+                ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 100),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Icon(
-                    Icons.vibration_rounded,
-                    color: Colors.green,
-                    size: 60,
-                  ),
-                  Icon(
-                    Icons.sos_outlined,
-                    color: Colors.red,
-                    size: 60,
-                  ),
-                ],
+            Card(
+              child: ListTile(
+                subtitle: const Text("Emergency sos pattern"),
+                subtitleTextStyle: Theme.of(context).textTheme.titleLarge,
+                title: const Text(
+                  "SOS",
+                ),
+                titleTextStyle: Theme.of(context).textTheme.headlineLarge,
+                trailing: Switch(
+                  onChanged: (value) {
+                    isSosOn = value;
+                    toggleSos(isSosOn, callbackIntent: () {
+                      setState(() {});
+                    });
+                    setState(() {});
+                  },
+                  value: isSosOn,
+                ),
               ),
-            )
+            ),
           ],
         ),
+      ),
+      bottomNavigationBar: Container(
+        height: 100,
+        color: Colors.amber,
       ),
     );
   }

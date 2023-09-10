@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Functions/aos12permission.dart';
+import 'package:shake_torch/Functions/notification_permission.dart';
+import 'package:shake_torch/Theme/dark_theme.dart';
+import 'package:shake_torch/Theme/light_theme.dart';
+import 'Functions/alarm_permission.dart';
 import 'Functions/terminated_run.dart';
 import 'screens/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,10 +26,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    askPermission();
+    super.initState();
+    alarmPermission();
+    notificationPermission();
     isBackgroundOn = sharedPreferences.getBool("isOn");
     setState(() {});
-    super.initState();
   }
 
   @override
@@ -35,17 +39,12 @@ class _MyAppState extends State<MyApp> {
       builder: (lightDynamic, darkDynamic) {
         return MaterialApp(
           title: "Shake torch",
-          theme: ThemeData(
-            colorScheme: lightDynamic,
-            useMaterial3: true,
-          ),
+          theme: lightTheme(lightDynamic),
+          darkTheme: darkTheme(darkDynamic),
           home: const HomePage(),
+          debugShowCheckedModeBanner: false,
         );
       },
     );
   }
-}
-
-Future<Color?> dynamicColor() async {
-  return await DynamicColorPlugin.getAccentColor();
 }

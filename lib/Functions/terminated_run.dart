@@ -17,7 +17,7 @@ ShakeDetector shake = ShakeDetector.waitForStart(
     await torchController.toggle();
     isTorchOn = !isTorchOn;
   },
-  shakeThresholdGravity: 9.5,
+  shakeThresholdGravity: 7.5,
 );
 FlutterBackgroundService flutterBackgroundService = FlutterBackgroundService();
 @pragma("vm:entry-point")
