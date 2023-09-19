@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 checkBatteryOptimization(context) async {
-  PermissionStatus permission =
-      await Permission.ignoreBatteryOptimizations.request();
-  if (permission.isGranted) {
+  Permission permission =
+       Permission.ignoreBatteryOptimizations;
+     PermissionStatus status = await permission.request();
+  if (status.isGranted) {
     debugPrint("Battery optimization is enabled");
   } else {
     debugPrint("Battery optimization is disabled");
