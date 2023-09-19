@@ -1,7 +1,16 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shake_torch/Functions/color_picker.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+
+TextEditingController controller = TextEditingController();
+Color backgroundColor = Colors.white;
+late StreamController<Color> colorController;
+late Stream<Color> colorStream;
+Color? tempColor;
+late StreamSubscription<Color>? subscription;
 
 class ScreenTorch extends StatefulWidget {
   const ScreenTorch({super.key});
@@ -13,20 +22,32 @@ class ScreenTorch extends StatefulWidget {
 class _ScreenTorchState extends State<ScreenTorch> {
   @override
   void initState() {
+    colorController = StreamController<Color>();
+    colorStream = colorController.stream.asBroadcastStream();
+    subscription = colorStream.listen((event) {
+      setState(() {
+        tempColor = event;
+      });
+    });
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.immersiveSticky,
     );
-    super.initState();
     Wakelock.enable();
     ScreenBrightness().setScreenBrightness(1.0);
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
+    colorController.close();
+    subscription!.cancel();
     ScreenBrightness().resetScreenBrightness();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+      SystemUiOverlay.top,
+      SystemUiOverlay.bottom,
+    ]);
     Wakelock.disable();
+    super.dispose();
   }
 
   @override
@@ -39,20 +60,108 @@ class _ScreenTorchState extends State<ScreenTorch> {
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
+            color: Colors.black,
           ),
         ),
         backgroundColor: Colors.transparent,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  return SimpleDialog(
+                    title: const Text(
+                      "Configure",
+                    ),
+
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          colorPicker(
+                            context: context,
+                          );
+                        },
+                        trailing: StreamBuilder(
+                          initialData: backgroundColor,
+                          stream: colorStream,
+                          builder: (context, snapshot) => CircleAvatar(
+                            backgroundColor: snapshot.hasData
+                                ? snapshot.data
+                                : backgroundColor,
+                          ),
+                        ),
+                        title: const Text(
+                          "Color",
+                        ),
+                      ),
+                      ListTile(
+                        title: TextFormField(
+                          decoration: InputDecoration(
+                            border: const UnderlineInputBorder(),
+                            helperText: "Center emoji",
+                            helperStyle: Theme.of(context).textTheme.bodyMedium,
+                            hintText: "Emojis only",
+                            prefixIcon: const Icon(
+                              Icons.emoji_emotions_rounded,
+                            ),
+                          ),
+                          maxLength: 1,
+                          controller: controller,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(
+                                r'^[\p{Emoji}]+$',
+                                unicode: true,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "Cancel",
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              backgroundColor = tempColor!;
+                              setState(() {});
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              "Ok",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    //   ),
+                  );
+                },
+              );
+            },
             icon: const Icon(
               Icons.mode_edit_outline_rounded,
+              color: Colors.black,
             ),
           )
         ],
       ),
+      body: Center(
+        child: Text(
+          controller.text,
+          style: Theme.of(context).textTheme.displayLarge,
+        ),
+      ),
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
     );
   }
 }

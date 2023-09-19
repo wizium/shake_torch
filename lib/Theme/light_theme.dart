@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 
- lightTheme(lightDynamic) {
+lightTheme(lightDynamic, context) {
   return ThemeData(
+    dialogTheme: DialogTheme(
+      titleTextStyle: Theme.of(context).textTheme.headlineSmall!.merge(
+            const TextStyle(
+              fontFamily: "caveat",
+            ),
+          ),
+      contentTextStyle: Theme.of(context).textTheme.headlineSmall!.merge(
+            const TextStyle(
+              fontFamily: "caveat",
+            ),
+          ),
+    ),
     colorScheme: lightDynamic,
-    useMaterial3: true,
+    useMaterial3: true, 
     textTheme: const TextTheme(
       bodyLarge: TextStyle(
         fontFamily: "caveat",

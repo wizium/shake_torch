@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 
-darkTheme(darkDynamic) {
+darkTheme(darkDynamic, context) {
   return ThemeData(
+    dialogTheme: DialogTheme(
+      titleTextStyle: Theme.of(context).textTheme.headlineSmall!.merge(
+            const TextStyle(
+              fontFamily: "caveat",
+            ),
+          ),
+      contentTextStyle: Theme.of(context).textTheme.headlineSmall!.merge(
+            const TextStyle(
+              fontFamily: "caveat",
+            ),
+          ),
+    ),
     useMaterial3: true,
     colorScheme: darkDynamic,
     textTheme: const TextTheme(
