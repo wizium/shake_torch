@@ -1,11 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:shake_torch/Functions/alarm_permission.dart';
-import 'package:shake_torch/Functions/battery_optimization.dart';
-import 'package:shake_torch/Functions/notification_permission.dart';
-import 'package:shake_torch/screens/settings.dart';
-import 'package:shake_torch/services/ad_services.dart';
+import '/Functions/alarm_permission.dart';
+import '/Functions/battery_optimization.dart';
+import '/Functions/notification_permission.dart';
+import '/screens/settings.dart';
+import '/services/ad_services.dart';
 import '/Functions/sos.dart';
 import '/Functions/terminated_run.dart';
 import 'screen_torch.dart';
@@ -32,9 +32,11 @@ class _HomePageState extends State<HomePage> {
       isTorchOn = event!["on"];
       setState(() {});
     });
-    alarmPermission(context);
-    checkBatteryOptimization(context);
-    notificationPermission(context);
+    alarmPermission(context).then((value) {
+      checkBatteryOptimization(context).then((value) {
+        notificationPermission(context);
+      });
+    });
     load();
     super.initState();
   }
@@ -48,14 +50,16 @@ class _HomePageState extends State<HomePage> {
           isLoaded = true;
           setState(() {});
         },
-        onAdFailedToLoad: (ad, error) {},
+        onAdFailedToLoad: (ad, error) {
+          debugPrint(error.message);
+          ad.dispose();
+        },
       ),
       request: const AdRequest(),
     );
     setState(() {});
     await bannerAd!.load();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

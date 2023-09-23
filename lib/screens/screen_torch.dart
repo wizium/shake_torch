@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shake_torch/Functions/color_picker.dart';
+import '/Functions/color_picker.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 

@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:shake_torch/Functions/data_init.dart';
-import 'package:shake_torch/Functions/terminated_run.dart';
-import 'package:shake_torch/widgets/custom_list_tiles.dart';
+import '/Functions/data_init.dart';
+import '/Functions/terminated_run.dart';
+import '/widgets/custom_list_tiles.dart';
 
 import '../main.dart';
 

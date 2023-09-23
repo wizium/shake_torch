@@ -1,10 +1,10 @@
 import 'package:get/instance_manager.dart';
-import 'package:shake_torch/Functions/sos.dart';
-import 'package:shake_torch/Functions/terminated_run.dart';
-import 'package:shake_torch/StateManagement/get_controller.dart';
-import 'package:shake_torch/main.dart';
-import 'package:shake_torch/screens/home.dart';
-import 'package:shake_torch/screens/settings.dart';
+import '/Functions/sos.dart';
+import '/Functions/terminated_run.dart';
+import '/StateManagement/get_controller.dart';
+import '/main.dart';
+import '/screens/home.dart';
+import '/screens/settings.dart';
 
 ThemeController themeController = Get.put(ThemeController());
 void dataInitialization() async {

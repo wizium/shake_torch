@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shake_torch/Functions/terminated_run.dart';
-import 'package:shake_torch/screens/home.dart';
+import '/Functions/terminated_run.dart';
+import '/screens/home.dart';
 import 'package:torch_controller/torch_controller.dart';
 
 TorchController torchController = TorchController();
