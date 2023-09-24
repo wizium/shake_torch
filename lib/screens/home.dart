@@ -15,7 +15,7 @@ bool isSosOn = false;
 bool? isTorchOn = false;
 
 bool isLoaded = false;
-BannerAd? bannerAd;
+late BannerAd bannerAd;
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   load() async {
     bannerAd = BannerAd(
       adUnitId: AdServices.bannerAdUnitId,
-      size: AdSize.fullBanner,
+      size: AdSize.banner,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           isLoaded = true;
@@ -58,8 +58,9 @@ class _HomePageState extends State<HomePage> {
       request: const AdRequest(),
     );
     setState(() {});
-    await bannerAd!.load();
+    await bannerAd.load();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,9 +210,13 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: isLoaded != true
           ? null
           : SizedBox(
-              height: bannerAd!.size.height.toDouble(),
-              width: bannerAd!.size.width.toDouble(),
-              child: Center(child: AdWidget(ad: bannerAd!)),
+              height: bannerAd.size.height.toDouble(),
+              width: bannerAd.size.width.toDouble(),
+              child: Center(
+                child: AdWidget(
+                  ad: bannerAd,
+                ),
+              ),
             ),
     );
   }

@@ -8,11 +8,15 @@ import 'Functions/terminated_run.dart';
 import 'screens/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-
 late SharedPreferences sharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
+  await MobileAds.instance.updateRequestConfiguration(
+    RequestConfiguration(
+      testDeviceIds: ["BDE42D866F9747015E725AA7C587A39D"],
+    ),
+  );
   await serviceInitializer();
   sharedPreferences = await SharedPreferences.getInstance();
   runApp(const MyApp());
