@@ -32,7 +32,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           isLoaded = true;
           setState(() {});
         },
-        onAdFailedToLoad: (error) => debugPrint(error.message),
+        onAdFailedToLoad: (error) {
+          debugPrint(error.message);
+        },
       ),
     );
   }
@@ -42,7 +44,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     load();
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

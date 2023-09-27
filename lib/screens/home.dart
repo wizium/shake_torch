@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shake_torch/widgets/Home_Drawer.dart';
 import '/Functions/alarm_permission.dart';
 import '/Functions/battery_optimization.dart';
 import '/Functions/notification_permission.dart';
@@ -10,6 +11,7 @@ import '/Functions/sos.dart';
 import '/Functions/terminated_run.dart';
 import 'screen_torch.dart';
 
+GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 bool isBackgroundOn = false;
 bool isSosOn = false;
 bool? isTorchOn = false;
@@ -44,7 +46,7 @@ class _HomePageState extends State<HomePage> {
   load() async {
     bannerAd = BannerAd(
       adUnitId: AdServices.bannerAdUnitId,
-      size: AdSize.banner,
+      size: AdSize.largeBanner,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           isLoaded = true;
@@ -62,26 +64,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    bannerAd.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
+      drawer: const HomeDrawer(),
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const SettingsScreen();
-                  },
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.settings,
-            ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu_rounded,
           ),
-        ],
+          onPressed: () {
+            scaffoldKey.currentState!.openDrawer();
+          },
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
         title: Text(
