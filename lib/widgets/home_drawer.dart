@@ -1,6 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:shake_torch/screens/premium_purchase.dart';
 import 'package:shake_torch/screens/settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -27,9 +30,9 @@ class HomeDrawerState extends State<HomeDrawer> {
                   subtitle: const Text(
                     "QSSSOFTNIC@GMAIL.COM",
                   ),
-                  trailing: const Icon(
+                  trailing: Icon(
                     Icons.verified,
-                    color: Colors.red,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   onTap: () {},
                   leading: const Image(
@@ -43,36 +46,14 @@ class HomeDrawerState extends State<HomeDrawer> {
                 Card(
                   child: ListTile(
                     leading: const Icon(
-                      Icons.home_rounded,
-                      size: 40,
-                    ),
-                    title: const Text("Home"),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.account_circle_outlined,
-                      size: 40,
-                    ),
-                    title: const Text("Account"),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    leading: const Icon(
                       Icons.workspace_premium_rounded,
                       size: 40,
                     ),
-                    title: const Text("Upgrade account"),
+                    title: const Text("Become ViP"),
                     onTap: () {
-                      Navigator.pop(context);
+                      Get.to(
+                        const PurchasePro(),
+                      );
                     },
                   ),
                 ),
@@ -108,7 +89,60 @@ class HomeDrawerState extends State<HomeDrawer> {
                     ),
                     title: const Text("About app"),
                     onTap: () {
-                      Get.to(const SettingsScreen());
+                      showAboutDialog(
+                        context: context,
+                        applicationName: "Shake Torch(FlashLight)",
+                        applicationVersion: "1.0.2(2)",
+                        applicationIcon: Image.asset(
+                          "assets/screenGlow.png",
+                          height: 50,
+                          width: 50,
+                        ),
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: "Developed by: ",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              children: [
+                                TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      if (!await launchUrl(
+                                        Uri.parse(
+                                          "https://github.com/AbubakarL",
+                                        ),
+                                      )) {
+                                        throw Exception('Could not launch');
+                                      }
+                                    },
+                                  text: "Muhammad Abubakar\n",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                const TextSpan(
+                                  text: "Contact us at ",
+                                ),
+                                TextSpan(
+                                  text: "Qsssoftnic@gmail.com ",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      launchUrl(
+                                        Uri.parse(
+                                          "mailto:Qsssoftnic@gmail.com",
+                                        ),
+                                      );
+                                    },
+                                ),
+                                const TextSpan(text: "for Business queries.")
+                              ],
+                            ),
+                          )
+                        ],
+                      );
                     },
                   ),
                 ),
