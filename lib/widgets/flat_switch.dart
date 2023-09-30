@@ -56,7 +56,7 @@ class _FlatSwitchState extends State<FlatSwitch> {
               ),
               child: Center(
                 child: Text(
-                  'Pro 20\$',
+                  'Pro',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),

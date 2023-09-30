@@ -72,10 +72,10 @@ class HomeDrawerState extends State<HomeDrawer> {
                 Card(
                   child: ListTile(
                     leading: const Icon(
-                      Icons.support_agent_rounded,
+                      Icons.feedback_rounded,
                       size: 40,
                     ),
-                    title: const Text("Support"),
+                    title: const Text("Feedback"),
                     onTap: () {
                       Navigator.pop(context);
                     },

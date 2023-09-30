@@ -1,6 +1,8 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shake_torch/widgets/flat_switch.dart';
+import 'package:shake_torch/widgets/premium_offerings.dart';
 
 bool selectedType = true;
 
@@ -63,11 +65,19 @@ class _PurchaseProState extends State<PurchasePro> {
                   children: selectedType
                       ? [
                           Text(
-                            "Shake sensitivity control",
+                            "Shake Torch",
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          Text(
+                            "Emergency SoS",
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
                             "Screen Torch",
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          Text(
+                            "Shake sensitivity control",
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                         ]
@@ -89,7 +99,7 @@ class _PurchaseProState extends State<PurchasePro> {
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
-                            "Dark/Light mode",
+                            "Dark/Light theme mode",
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
@@ -111,9 +121,22 @@ class _PurchaseProState extends State<PurchasePro> {
                     ),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Get.bottomSheet(
+                    CarouselSlider(
+                      items: const [
+                        PremiumOffers(),
+                        PremiumOffers(),
+                        PremiumOffers(),
+                      ],
+                      options: CarouselOptions(
+                          // enlargeCenterPage: true,
+                          ),
+                    ),
+                  );
+                },
                 child: Text(
-                  "Buy Now",
+                  "Buy",
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),

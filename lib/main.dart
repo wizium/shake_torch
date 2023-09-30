@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shake_torch/services/ad_services.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'Functions/data_init.dart';
 import 'Theme/dark_theme.dart';
 import 'Theme/light_theme.dart';
@@ -12,14 +13,11 @@ import 'package:dynamic_color/dynamic_color.dart';
 late SharedPreferences sharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
-  await MobileAds.instance.updateRequestConfiguration(
-    RequestConfiguration(
-      testDeviceIds: [
-        "5429B0FE91986BF9E54DFF8EEB4BFE55",
-        "BDE42D866F9747015E725AA7C587A39D"
-      ],
-    ),
+  await UnityAds.init(
+    testMode: false,
+    gameId: AdServices.appId,
+    onComplete: () => debugPrint("Unity gameId is Initialized"),
+    onFailed: (error, errorMessage) => debugPrint(errorMessage),
   );
   await serviceInitializer();
   sharedPreferences = await SharedPreferences.getInstance();
@@ -48,7 +46,7 @@ class _MyAppState extends State<MyApp> {
         return GetMaterialApp(
           themeMode:
               themeController.dark.value ? ThemeMode.dark : ThemeMode.light,
-          title: "Shake torch",
+          title: "Shake torch(FlashLight)",
           theme: lightTheme(lightDynamic, context),
           darkTheme: darkTheme(darkDynamic, context),
           home: const HomePage(),

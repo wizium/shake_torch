@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shake_torch/services/ad_services.dart';
 import 'package:shake_torch/widgets/Home_Drawer.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '/Functions/alarm_permission.dart';
 import '/Functions/battery_optimization.dart';
 import '/Functions/notification_permission.dart';
 import '/screens/settings.dart';
-import '/services/ad_services.dart';
 import '/Functions/sos.dart';
 import '/Functions/terminated_run.dart';
 import 'screen_torch.dart';
@@ -15,9 +15,6 @@ GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 bool isBackgroundOn = false;
 bool isSosOn = false;
 bool? isTorchOn = false;
-
-bool isLoaded = false;
-late BannerAd bannerAd;
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -39,34 +36,7 @@ class _HomePageState extends State<HomePage> {
         notificationPermission(context);
       });
     });
-    load();
     super.initState();
-  }
-
-  load() async {
-    bannerAd = BannerAd(
-      adUnitId: AdServices.bannerAdUnitId,
-      size: AdSize.largeBanner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          isLoaded = true;
-          setState(() {});
-        },
-        onAdFailedToLoad: (ad, error) {
-          debugPrint(error.message);
-          ad.dispose();
-        },
-      ),
-      request: const AdRequest(),
-    );
-    setState(() {});
-    await bannerAd.load();
-  }
-
-  @override
-  void dispose() {
-    bannerAd.dispose();
-    super.dispose();
   }
 
   @override
@@ -86,7 +56,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: true,
         title: Text(
-          "Shake to Torch",
+          "Shake torch(FlashLight)",
           style: const TextStyle().merge(
             const TextStyle(
               fontSize: 30,
@@ -208,17 +178,13 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: isLoaded != true
-          ? null
-          : SizedBox(
-              height: bannerAd.size.height.toDouble(),
-              width: bannerAd.size.width.toDouble(),
-              child: Center(
-                child: AdWidget(
-                  ad: bannerAd,
-                ),
-              ),
-            ),
+      bottomNavigationBar: UnityBannerAd(
+        size: BannerSize.iabStandard,
+        placementId: AdServices.bannerAdUnitId,
+        onLoad: (placementId) {
+          debugPrint("$placementId is loaded");
+        },
+      ),
     );
   }
 }

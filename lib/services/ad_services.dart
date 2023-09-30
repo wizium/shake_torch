@@ -1,5 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 class AdServices {
-  static String bannerAdUnitId = "ca-app-pub-3940256099942544/6300978111";
-  static String interstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712";
+  static String appId = "5431494";
+  static String bannerAdUnitId = "Banner_Android";
+  static String interstitialAdUnitId = "Interstitial_Android";
+  interstitialAdLoad(
+      {required interstitialAdId, required VoidCallback callback}) async {
+    await UnityAds.load(
+      placementId: interstitialAdId,
+      onComplete: (placementId) {
+        debugPrint(
+          "$placementId is loaded",
+        );
+        callback();
+      },
+      onFailed: (placementId, error, errorMessage) {
+        debugPrint(
+          "$placementId id failed to load for $errorMessage",
+        );
+      },
+    );
+  }
 }
