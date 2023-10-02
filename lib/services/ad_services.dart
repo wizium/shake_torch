@@ -22,4 +22,14 @@ class AdServices {
       },
     );
   }
+
+  showInterstitialAd(bool loadNotifier, VoidCallback callback) async {
+    if (loadNotifier) {
+      await UnityAds.showVideoAd(
+        placementId: AdServices.interstitialAdUnitId,
+      );
+      loadNotifier = false;
+      callback();
+    }
+  }
 }

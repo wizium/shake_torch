@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shake_torch/services/ad_services.dart';
 import '/Functions/color_picker.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
+bool isLoaded = false;
 TextEditingController controller = TextEditingController();
 Color backgroundColor = Colors.white;
 late StreamController<Color> colorController;
@@ -34,6 +36,13 @@ class _ScreenTorchState extends State<ScreenTorch> {
     );
     Wakelock.enable();
     ScreenBrightness().setScreenBrightness(1.0);
+    AdServices().interstitialAdLoad(
+      interstitialAdId: AdServices.interstitialAdUnitId,
+      callback: () {
+        isLoaded = true;
+        setState(() {});
+      },
+    );
     super.initState();
   }
 
@@ -47,6 +56,9 @@ class _ScreenTorchState extends State<ScreenTorch> {
       SystemUiOverlay.bottom,
     ]);
     Wakelock.disable();
+    AdServices().showInterstitialAd(isLoaded, () {
+      setState(() {});
+    });
     super.dispose();
   }
 

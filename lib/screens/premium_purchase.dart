@@ -1,8 +1,7 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:shake_torch/widgets/flat_switch.dart';
-import 'package:shake_torch/widgets/premium_offerings.dart';
+import '/main.dart';
+import '/widgets/flat_switch.dart';
 
 bool selectedType = true;
 
@@ -122,18 +121,7 @@ class _PurchaseProState extends State<PurchasePro> {
                   ),
                 ),
                 onPressed: () {
-                  Get.bottomSheet(
-                    CarouselSlider(
-                      items: const [
-                        PremiumOffers(),
-                        PremiumOffers(),
-                        PremiumOffers(),
-                      ],
-                      options: CarouselOptions(
-                          // enlargeCenterPage: true,
-                          ),
-                    ),
-                  );
+                  buy();
                 },
                 child: Text(
                   "Buy",

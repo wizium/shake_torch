@@ -5,6 +5,8 @@ import 'package:shake_torch/screens/premium_purchase.dart';
 import 'package:shake_torch/screens/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../screens/login.dart';
+
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
 
@@ -34,7 +36,11 @@ class HomeDrawerState extends State<HomeDrawer> {
                     Icons.verified,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(
+                      const LoginScreen(),
+                    );
+                  },
                   leading: const Image(
                     height: 100,
                     image: AssetImage(
@@ -91,8 +97,8 @@ class HomeDrawerState extends State<HomeDrawer> {
                     onTap: () {
                       showAboutDialog(
                         context: context,
-                        applicationName: "Shake Torch(FlashLight)",
-                        applicationVersion: "1.0.2(2)",
+                        applicationName: "Shake Torch",
+                        applicationVersion: "1.0.2",
                         applicationIcon: Image.asset(
                           "assets/screenGlow.png",
                           height: 50,
