@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
-import 'screens/home.dart';
+import 'package:shake_torch/StateManagement/get_controller.dart';
+import '/firebase_options.dart';
+import '/screens/splash.dart';
+import '/services/purchases.dart';
 import 'services/ad_services.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'Functions/data_init.dart';
@@ -12,30 +17,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
-buy() async {
-  PurchaseParam purchaseParam = PurchaseParam(productDetails: products[0]);
-  debugPrint(products[0].price);
-  await inAppPurchase.buyConsumable(
-    purchaseParam: purchaseParam,
-  );
-}
-
 late StreamSubscription inAppPurchaseSubscription;
 List<ProductDetails> products = [];
 const Set<String> kProductIds = {
   "test_product",
 };
+IsPro isPro = Get.put(IsPro());
 late SharedPreferences sharedPreferences;
-late InAppPurchase inAppPurchase;
+InAppPurchase inAppPurchase = InAppPurchase.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await UnityAds.init(
     testMode: false,
     gameId: AdServices.appId,
     onComplete: () => debugPrint("Unity gameId is Initialized"),
     onFailed: (error, errorMessage) => debugPrint(errorMessage),
   );
-  inAppPurchase = InAppPurchase.instance;
+
   await serviceInitializer();
   sharedPreferences = await SharedPreferences.getInstance();
   runApp(const MyApp());
@@ -65,33 +66,12 @@ class _MyAppState extends State<MyApp> {
         );
       },
     );
-    initStore();
+    initStore(() {
+      setState(() {});
+    });
     dataInitialization();
     setState(() {});
     super.initState();
-  }
-
-  listenToPurchase(List<PurchaseDetails> purchaseDetails) async {
-    for (var element in purchaseDetails) {
-      if (element.status == PurchaseStatus.pending) {
-        debugPrint("Purchase pending");
-      } else if (element.status == PurchaseStatus.error) {
-        debugPrint("Error Buying");
-      } else if (element.status == PurchaseStatus.purchased) {
-        debugPrint("purchased");
-      }
-    }
-  }
-
-  initStore() async {
-    ProductDetailsResponse productDetailsResponse =
-        await inAppPurchase.queryProductDetails(kProductIds);
-    if (productDetailsResponse.error == null) {
-      products = productDetailsResponse.productDetails;
-    } else {
-      debugPrint(productDetailsResponse.error.toString());
-    }
-    setState(() {});
   }
 
   @override
@@ -104,7 +84,7 @@ class _MyAppState extends State<MyApp> {
           title: "Shake torch(FlashLight)",
           theme: lightTheme(lightDynamic, context),
           darkTheme: darkTheme(darkDynamic, context),
-          home: const HomePage(),
+          home: const SplashScreen(),
           debugShowCheckedModeBanner: false,
         );
       },

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shake_torch/main.dart';
 import 'package:shake_torch/services/ad_services.dart';
 import '/Functions/color_picker.dart';
 import 'package:wakelock/wakelock.dart';
@@ -36,13 +37,15 @@ class _ScreenTorchState extends State<ScreenTorch> {
     );
     Wakelock.enable();
     ScreenBrightness().setScreenBrightness(1.0);
-    AdServices().interstitialAdLoad(
-      interstitialAdId: AdServices.interstitialAdUnitId,
-      callback: () {
-        isLoaded = true;
-        setState(() {});
-      },
-    );
+    if (isPro.isPro.value != true) {
+      AdServices().interstitialAdLoad(
+        interstitialAdId: AdServices.interstitialAdUnitId,
+        callback: () {
+          isLoaded = true;
+          setState(() {});
+        },
+      );
+    }
     super.initState();
   }
 
@@ -56,9 +59,11 @@ class _ScreenTorchState extends State<ScreenTorch> {
       SystemUiOverlay.bottom,
     ]);
     Wakelock.disable();
-    AdServices().showInterstitialAd(isLoaded, () {
-      setState(() {});
-    });
+    if (isPro.isPro.value != true) {
+      AdServices().showInterstitialAd(isLoaded, () {
+        setState(() {});
+      });
+    }
     super.dispose();
   }
 

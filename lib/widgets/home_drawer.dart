@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shake_torch/Functions/login.dart';
+import 'package:shake_torch/main.dart';
 import 'package:shake_torch/screens/premium_purchase.dart';
 import 'package:shake_torch/screens/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../screens/login.dart';
+FirebaseAuth auth = FirebaseAuth.instance;
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -25,44 +29,74 @@ class HomeDrawerState extends State<HomeDrawer> {
           children: [
             Column(
               children: [
-                ListTile(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                  title: const Text("I AM KING"),
-                  subtitle: const Text(
-                    "QSSSOFTNIC@GMAIL.COM",
-                  ),
-                  trailing: Icon(
-                    Icons.verified,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  onTap: () {
-                    Get.to(
-                      const LoginScreen(),
-                    );
-                  },
-                  leading: const Image(
-                    height: 100,
-                    image: AssetImage(
-                      "assets/screenGlow.png",
+                if (auth.currentUser != null)
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 10,
                     ),
-                  ),
-                ),
-                const Divider(),
-                Card(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.workspace_premium_rounded,
-                      size: 40,
+                    title: Text(auth.currentUser!.displayName!),
+                    subtitle: Text(
+                      auth.currentUser!.email!,
                     ),
-                    title: const Text("Become ViP"),
-                    onTap: () {
-                      Get.to(
-                        const PurchasePro(),
+                    trailing: Obx(() {
+                      return Icon(
+                        isPro.isPro.value
+                            ? Icons.workspace_premium_rounded
+                            : null,
+                        color: Theme.of(context).colorScheme.primary,
                       );
-                    },
+                    }),
+                    onTap: null,
+                    leading: Image(
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.account_circle_rounded,
+                          size: Get.height * .05,
+                        );
+                      },
+                      height: Get.height * .1,
+                      image: NetworkImage(
+                        auth.currentUser!.photoURL!,
+                      ),
+                    ),
+                  )
+                else
+                  Card(
+                    child: ListTile(
+                      onTap: () {
+                        signInCheck();
+                      },
+                      leading: const Icon(
+                        Icons.account_circle_rounded,
+                        size: 40,
+                      ),
+                      title: const Center(
+                        child: Text(
+                          "Login",
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                const Divider(),
+                Obx(() {
+                  return isPro.isPro.value != true
+                      ? Card(
+                          child: ListTile(
+                            leading: const Icon(
+                              Icons.workspace_premium_rounded,
+                              size: 40,
+                            ),
+                            title: const Text("Become ViP"),
+                            onTap: () {
+                              Get.to(
+                                const PurchasePro(),
+                              );
+                            },
+                          ),
+                        )
+                      : const SizedBox();
+                }),
                 Card(
                   child: ListTile(
                     leading: const Icon(
@@ -155,15 +189,24 @@ class HomeDrawerState extends State<HomeDrawer> {
                 const Divider(),
               ],
             ),
-            const Card(
-              child: ListTile(
-                title: Center(
-                  child: Text(
-                    "Logout",
-                  ),
-                ),
-              ),
-            )
+            auth.currentUser != null
+                ? Card(
+                    child: ListTile(
+                      onTap: () async {
+                        await auth.signOut();
+                        await GoogleSignIn().signOut();
+                        sharedPreferences.setBool("isPro", false);
+                        isPro.init();
+                        await signInCheck();
+                      },
+                      title: const Center(
+                        child: Text(
+                          "Logout",
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox(),
           ],
         ),
       ),

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "942844328093",
+    "project_id": "shaketorch-b4d38",
+    "storage_bucket": "shaketorch-b4d38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942844328093:android:2beb8436fb07eab7533c74",
+        "android_client_info": {
+          "package_name": "com.wizium.shake_torch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942844328093-54dd31ifjgl6ed8crtf825i08pef6ipd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wizium.shake_torch",
+            "certificate_hash": "7db0e900132ac79fd5a5b0e15dbbce2706c076ff"
+          }
+        },
+        {
+          "client_id": "942844328093-rb8qh2au25dc4j4t373f2hj4l06363ei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcszud-5EsUiKO8kUPbXIE6KP56IR2KOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942844328093-rb8qh2au25dc4j4t373f2hj4l06363ei.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

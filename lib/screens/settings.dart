@@ -22,21 +22,25 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
-    AdServices().interstitialAdLoad(
-        interstitialAdId: AdServices.interstitialAdUnitId,
-        callback: () {
-          setState(() {
-            isLoaded = true;
+    if (isPro.isPro.value != true) {
+      AdServices().interstitialAdLoad(
+          interstitialAdId: AdServices.interstitialAdUnitId,
+          callback: () {
+            setState(() {
+              isLoaded = true;
+            });
           });
-        });
+    }
     super.initState();
   }
 
   @override
   void dispose() {
-    AdServices().showInterstitialAd(isLoaded, () {
-      setState(() {});
-    });
+    if (isPro.isPro.value != true) {
+      AdServices().showInterstitialAd(isLoaded, () {
+        setState(() {});
+      });
+    }
     super.dispose();
   }
 
@@ -148,43 +152,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ],
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.snackbar(
-                          "Become Pro",
-                          "To use these settings become pro first.",
-                          mainButton: TextButton(
-                            onPressed: () {
-                              Get.to(
-                                const PurchasePro(),
-                              );
-                            },
-                            child: const Text(
-                              "Become Pro",
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: Get.height * .55,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            20,
-                          ),
-                          color: Theme.of(context)
-                              .colorScheme
-                              .inversePrimary
-                              .withOpacity(.5),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.workspace_premium_outlined,
-                            color: Colors.amber.withOpacity(.3),
-                            size: Get.height * .3,
-                          ),
-                        ),
-                      ),
-                    ),
+                    Obx(() {
+                      return isPro.isPro.value != true
+                          ? GestureDetector(
+                              onTap: () {
+                                Get.snackbar(
+                                  "Become Pro",
+                                  "To use these settings become pro first.",
+                                  mainButton: TextButton(
+                                    onPressed: () {
+                                      Get.to(
+                                        const PurchasePro(),
+                                      );
+                                    },
+                                    child: const Text(
+                                      "Become Pro",
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: Get.height * .55,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    20,
+                                  ),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .inversePrimary
+                                      .withOpacity(.5),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.workspace_premium_outlined,
+                                    color: Colors.amber.withOpacity(.3),
+                                    size: Get.height * .3,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox();
+                    }),
                   ],
                 ),
               ),

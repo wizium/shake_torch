@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:shake_torch/main.dart';
 import '/services/ad_services.dart';
 import '/widgets/Home_Drawer.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
@@ -40,12 +41,14 @@ class _HomePageState extends State<HomePage> {
         notificationPermission(context);
       });
     });
-    AdServices().interstitialAdLoad(
-        interstitialAdId: AdServices.interstitialAdUnitId,
-        callback: () {
-          isLoaded = true;
-          setState(() {});
-        });
+    if (isPro.isPro.value != true) {
+      AdServices().interstitialAdLoad(
+          interstitialAdId: AdServices.interstitialAdUnitId,
+          callback: () {
+            isLoaded = true;
+            setState(() {});
+          });
+    }
     super.initState();
   }
 
@@ -66,16 +69,20 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () {
-                  if (isLoaded) {
-                    UnityAds.showVideoAd(
-                      placementId: AdServices.interstitialAdUnitId,
-                      onComplete: (placementId) {
-                        SystemNavigator.pop();
-                      },
-                      onSkipped: (placementId) {
-                        SystemNavigator.pop();
-                      },
-                    );
+                  if (isPro.isPro.value != true) {
+                    if (isLoaded) {
+                      UnityAds.showVideoAd(
+                        placementId: AdServices.interstitialAdUnitId,
+                        onComplete: (placementId) {
+                          SystemNavigator.pop();
+                        },
+                        onSkipped: (placementId) {
+                          SystemNavigator.pop();
+                        },
+                      );
+                    } else {
+                      SystemNavigator.pop();
+                    }
                   } else {
                     SystemNavigator.pop();
                   }
@@ -191,14 +198,11 @@ class _HomePageState extends State<HomePage> {
                               "background": background,
                               "auto": auto
                             });
-                          } catch (e)
-                            {
-                              alarmPermission(context).then(
+                          } catch (e) {
+                            alarmPermission(context).then(
                                 (value) => notificationPermission(context));
-                            }
+                          }
                         }
-
-
                       },
                     ),
                   ),
@@ -227,18 +231,22 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        bottomNavigationBar: UnityBannerAd(
-          size: BannerSize.standard,
-          placementId: AdServices.bannerAdUnitId,
-          onLoad: (placementId) {
-            debugPrint("$placementId is loaded");
-          },
-          onFailed: (placementId, error, errorMessage) {
-            debugPrint(
-              "$placementId is failed to load for $errorMessage",
-            );
-          },
-        ),
+        bottomNavigationBar: Obx(() {
+          return isPro.isPro.value != true
+              ? UnityBannerAd(
+                  size: BannerSize.standard,
+                  placementId: AdServices.bannerAdUnitId,
+                  onLoad: (placementId) {
+                    debugPrint("$placementId is loaded");
+                  },
+                  onFailed: (placementId, error, errorMessage) {
+                    debugPrint(
+                      "$placementId is failed to load for $errorMessage",
+                    );
+                  },
+                )
+              : const SizedBox();
+        }),
       ),
     );
   }

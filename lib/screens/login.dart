@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shake_torch/screens/home.dart';
-
+import '/Functions/login.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   @override
@@ -63,15 +63,14 @@ class LoginScreenState extends State<LoginScreen> {
                     top: Get.width * .35,
                   ),
                   child: InkWell(
-                    onTap: () {
-                      // SignIn().googleSignIn();
+                    onTap: () async {
+                      await SignIn().googleSignIn();
                     },
                     child: Container(
                       height: Get.height * .08,
                       width: Get.width * .9,
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
-                        // color: Colors.deepOrange[400],
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(

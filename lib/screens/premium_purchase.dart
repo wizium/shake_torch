@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import '/main.dart';
+import '/services/purchases.dart';
 import '/widgets/flat_switch.dart';
 
 bool selectedType = true;
@@ -120,7 +120,7 @@ class _PurchaseProState extends State<PurchasePro> {
                     ),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   buy();
                 },
                 child: Text(

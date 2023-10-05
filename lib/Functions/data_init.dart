@@ -15,4 +15,5 @@ void dataInitialization() async {
   themeController.init();
   sosDelay = sharedPreferences.getDouble("sosDelay") ?? 1.0;
   isTorchOn = await torchController.isTorchActive;
+  isPro.init();
 }
