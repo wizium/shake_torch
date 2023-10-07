@@ -1,13 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shake_torch/main.dart';
 import 'package:shake_torch/screens/home.dart';
 import 'package:shake_torch/screens/login.dart';
 import 'package:shake_torch/services/purchases.dart';
-
-import '../widgets/home_drawer.dart';
+import '/widgets/home_drawer.dart';
+import 'subscription_check.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 Future<void> signInCheck() async {
@@ -40,12 +41,15 @@ class SignIn {
           )
           .get()
           .then((value) {
-        final bool isProUser = value.get("isPro") ?? false;
-        sharedPreferences.setBool(
-          "isPro",
-          isProUser,
+        final Timestamp endDate = value.get("endDate");
+        sharedPreferences.setString(
+          "endDate",
+          endDate.toDate().toString(),
         );
-        isPro.init();
+        if (kDebugMode) {
+          print("\nendDate: ${endDate.toDate().toString()}\n");
+        }
+        subscriptionCheck(endDate);
       }).onError((error, stackTrace) {
         debugPrint(error.toString());
         sharedPreferences.setBool("isPro", false);

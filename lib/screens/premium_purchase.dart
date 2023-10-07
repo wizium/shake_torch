@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:shake_torch/main.dart';
 import '/services/purchases.dart';
 import '/widgets/flat_switch.dart';
 
@@ -121,7 +122,212 @@ class _PurchaseProState extends State<PurchasePro> {
                   ),
                 ),
                 onPressed: () async {
-                  buy();
+                  Get.bottomSheet(
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadiusDirectional.only(
+                          topEnd: Radius.circular(20),
+                          topStart: Radius.circular(20),
+                        ),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      height: Get.height * .45,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Get.width * .02,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                buy(product: products[0]);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(
+                                    65,
+                                  ),
+                                ),
+                                height: Get.height * .15,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: Get.width * .05,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(
+                                        Icons.star_rate_rounded,
+                                        color: Colors.white,
+                                        size: Get.height * .1,
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                            products[0].description,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                          Text(
+                                            "Best Value",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                            products[0].price,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                          Text(
+                                            "One Time",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                buy(product: products[1]);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.purple,
+                                  borderRadius: BorderRadius.circular(
+                                    65,
+                                  ),
+                                ),
+                                height: Get.height * .15,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: Get.width * .05,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(
+                                        Icons.workspace_premium_outlined,
+                                        color: Colors.white,
+                                        size: Get.height * .1,
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                            products[1].description,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                )
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                          Text(
+                                            "Best Value",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                            products[1].price,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                          Text(
+                                            "One Time",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .merge(
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // buy(product: products[0]);
+                  );
                 },
                 child: Text(
                   "Buy",

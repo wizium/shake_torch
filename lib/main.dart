@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
 import 'package:shake_torch/StateManagement/get_controller.dart';
 import '/firebase_options.dart';
 import '/screens/splash.dart';
@@ -20,7 +19,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 late StreamSubscription inAppPurchaseSubscription;
 List<ProductDetails> products = [];
 const Set<String> kProductIds = {
-  "test_product",
+  "test_product", "life_time"
 };
 IsPro isPro = Get.put(IsPro());
 late SharedPreferences sharedPreferences;
@@ -85,6 +84,7 @@ class _MyAppState extends State<MyApp> {
           theme: lightTheme(lightDynamic, context),
           darkTheme: darkTheme(darkDynamic, context),
           home: const SplashScreen(),
+          // home: const PurchasePro(),
           debugShowCheckedModeBanner: false,
         );
       },

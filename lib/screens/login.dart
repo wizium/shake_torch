@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shake_torch/screens/home.dart';
+import 'package:shake_torch/widgets/home_drawer.dart';
 import '/Functions/login.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   @override
@@ -17,6 +20,8 @@ class LoginScreenState extends State<LoginScreen> {
         actions: [
           TextButton(
             onPressed: () {
+              auth.signOut();
+              GoogleSignIn().signOut();
               Get.offAll(
                 const HomePage(),
               );
@@ -53,7 +58,7 @@ class LoginScreenState extends State<LoginScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
                       image: const DecorationImage(
-                        image: AssetImage('assets/screenGlow.png'),
+                        image: AssetImage('assets/AppIcon.png'),
                       ),
                     ),
                   ),

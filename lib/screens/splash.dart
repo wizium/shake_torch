@@ -1,8 +1,11 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:shake_torch/Functions/login.dart';
+import 'package:shake_torch/Functions/subscription_check.dart';
+import '/main.dart';
+import '/screens/home.dart';
+import '/Functions/login.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,7 +18,27 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Timer(const Duration(seconds: 2), () async {
-      await signInCheck();
+      try {
+        final Timestamp endDate = Timestamp.fromDate(
+          DateTime.parse(
+            sharedPreferences.getString("endDate")!,
+          ),
+        );
+        debugPrint(endDate.toDate().toString());
+        subscriptionCheck(endDate);
+      } catch (e) {
+        debugPrint(e.toString());
+        sharedPreferences.setBool("isPro", false);
+      }
+      final isFirstTime = sharedPreferences.getBool("isFirstTime");
+      if (isFirstTime == null) {
+        await sharedPreferences.setBool("isFirstTime", false);
+        signInCheck();
+      } else {
+        Get.offAll(
+          () => const HomePage(),
+        );
+      }
     });
     super.initState();
   }
@@ -38,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               child: Center(
                 child: Image.asset(
-                  "assets/screenGlow.png",
+                  "assets/AppIcon.png",
                   height: Get.height * .35,
                 ),
               ),

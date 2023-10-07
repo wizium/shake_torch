@@ -134,7 +134,7 @@ class HomeDrawerState extends State<HomeDrawer> {
                         applicationName: "Shake Torch",
                         applicationVersion: "1.0.2",
                         applicationIcon: Image.asset(
-                          "assets/screenGlow.png",
+                          "assets/AppIcon.png",
                           height: 50,
                           width: 50,
                         ),
@@ -177,7 +177,21 @@ class HomeDrawerState extends State<HomeDrawer> {
                                       );
                                     },
                                 ),
-                                const TextSpan(text: "for Business queries.")
+                                const TextSpan(text: "for Business queries.\n"),
+                                TextSpan(
+                                  text: "Privacy Policy",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      launchUrl(
+                                        Uri.parse(
+                                          "https://sites.google.com/view/shaketorch",
+                                        ),
+                                      );
+                                    },
+                                ),
                               ],
                             ),
                           )
@@ -195,6 +209,7 @@ class HomeDrawerState extends State<HomeDrawer> {
                       onTap: () async {
                         await auth.signOut();
                         await GoogleSignIn().signOut();
+                        sharedPreferences.remove("endDate");
                         sharedPreferences.setBool("isPro", false);
                         isPro.init();
                         await signInCheck();
