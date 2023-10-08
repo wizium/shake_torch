@@ -8,7 +8,9 @@ import 'package:shake_torch/main.dart';
 import 'package:shake_torch/screens/premium_purchase.dart';
 import 'package:shake_torch/screens/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:in_app_review/in_app_review.dart';
 
+InAppReview review = InAppReview.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
 class HomeDrawer extends StatefulWidget {
@@ -116,8 +118,14 @@ class HomeDrawerState extends State<HomeDrawer> {
                       size: 40,
                     ),
                     title: const Text("Feedback"),
-                    onTap: () {
-                      Navigator.pop(context);
+                    onTap: () async {
+                      if (await review.isAvailable()) {
+                        await review.requestReview();
+                      } else {
+                        await review.openStoreListing(
+                          appStoreId: "com.wizium.shake_torch"
+                        );
+                      }
                     },
                   ),
                 ),

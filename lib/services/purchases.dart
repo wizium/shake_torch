@@ -6,6 +6,7 @@ import 'package:shake_torch/Functions/subscription_check.dart';
 import 'package:shake_torch/screens/login.dart';
 import '/widgets/home_drawer.dart';
 import '/main.dart';
+
 late PurchaseParam purchaseParam;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 listenToPurchase(List<PurchaseDetails> purchaseDetails) async {
@@ -13,6 +14,8 @@ listenToPurchase(List<PurchaseDetails> purchaseDetails) async {
     if (element.status == PurchaseStatus.pending) {
       debugPrint("Purchase pending");
     } else if (element.status == PurchaseStatus.error) {
+      debugPrint("Error Buying");
+    } else if (element.status == PurchaseStatus.purchased) {
       Timestamp? endDate;
       if (purchaseParam.productDetails.id == products[1].id) {
         endDate = Timestamp.fromDate(
@@ -44,8 +47,6 @@ listenToPurchase(List<PurchaseDetails> purchaseDetails) async {
           ),
         ),
       );
-      debugPrint("Error Buying");
-    } else if (element.status == PurchaseStatus.purchased) {
       debugPrint("purchased");
     }
   }

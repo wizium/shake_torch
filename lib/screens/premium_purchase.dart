@@ -129,7 +129,7 @@ class _PurchaseProState extends State<PurchasePro> {
                           topEnd: Radius.circular(20),
                           topStart: Radius.circular(20),
                         ),
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
                       ),
                       height: Get.height * .45,
                       child: Padding(
@@ -152,8 +152,9 @@ class _PurchaseProState extends State<PurchasePro> {
                                 ),
                                 height: Get.height * .15,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: Get.width * .05,
+                                  padding: EdgeInsets.only(
+                                    right: Get.width * .1,
+                                    left: Get.width * .05,
                                   ),
                                   child: Row(
                                     mainAxisAlignment:
@@ -243,8 +244,9 @@ class _PurchaseProState extends State<PurchasePro> {
                                 ),
                                 height: Get.height * .15,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: Get.width * .05,
+                                  padding: EdgeInsets.only(
+                                    right: Get.width * .1,
+                                    left: Get.width * .05,
                                   ),
                                   child: Row(
                                     mainAxisAlignment:
@@ -276,7 +278,7 @@ class _PurchaseProState extends State<PurchasePro> {
                                                 ),
                                           ),
                                           Text(
-                                            "Best Value",
+                                            "Most Popular",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headlineSmall!
