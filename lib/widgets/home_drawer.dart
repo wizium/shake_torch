@@ -9,11 +9,8 @@ import 'package:shake_torch/main.dart';
 import 'package:shake_torch/screens/premium_purchase.dart';
 import 'package:shake_torch/screens/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:in_app_review/in_app_review.dart';
 
 import '../Functions/feedback.dart';
-
-InAppReview review = InAppReview.instance;
 FirebaseAuth auth = FirebaseAuth.instance;
 
 class HomeDrawer extends StatefulWidget {
@@ -140,7 +137,7 @@ class HomeDrawerState extends State<HomeDrawer> {
                         showAboutDialog(
                           context: context,
                           applicationName: "Shake Torch",
-                          applicationVersion: "1.0.2",
+                          applicationVersion: "1.0.3",
                           applicationIcon: Image.asset(
                             "assets/AppIcon.png",
                             height: 50,
