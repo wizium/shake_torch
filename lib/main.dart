@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'package:feedback/feedback.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shake_torch/StateManagement/get_controller.dart';
+import '/StateManagement/get_controller.dart';
 import '/firebase_options.dart';
 import '/screens/splash.dart';
 import '/services/purchases.dart';
@@ -18,10 +19,9 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 
 late StreamSubscription inAppPurchaseSubscription;
 List<ProductDetails> products = [];
-const Set<String> kProductIds = {
-  "test_product", "life_time"
-};
+const Set<String> kProductIds = {"test_product", "life_time"};
 IsPro isPro = Get.put(IsPro());
+bool isLoaded = false;
 late SharedPreferences sharedPreferences;
 InAppPurchase inAppPurchase = InAppPurchase.instance;
 void main() async {
@@ -38,7 +38,12 @@ void main() async {
 
   await serviceInitializer();
   sharedPreferences = await SharedPreferences.getInstance();
-  runApp(const MyApp());
+
+  runApp(
+    const BetterFeedback(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -84,7 +89,6 @@ class _MyAppState extends State<MyApp> {
           theme: lightTheme(lightDynamic, context),
           darkTheme: darkTheme(darkDynamic, context),
           home: const SplashScreen(),
-          // home: const PurchasePro(),
           debugShowCheckedModeBanner: false,
         );
       },

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import '/main.dart';
+
 class ThemeController extends GetxController {
   RxBool dark = false.obs;
   changeTheme() {

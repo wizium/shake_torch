@@ -7,7 +7,6 @@ import '/Functions/color_picker.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
-bool isLoaded = false;
 TextEditingController controller = TextEditingController();
 Color backgroundColor = Colors.white;
 late StreamController<Color> colorController;
@@ -37,14 +36,8 @@ class _ScreenTorchState extends State<ScreenTorch> {
     );
     Wakelock.enable();
     ScreenBrightness().setScreenBrightness(1.0);
-    if (isPro.isPro.value != true) {
-      AdServices().interstitialAdLoad(
-        interstitialAdId: AdServices.interstitialAdUnitId,
-        callback: () {
-          isLoaded = true;
-          setState(() {});
-        },
-      );
+    if (!isLoaded) {
+      AdServices().interstitialAdLoad();
     }
     super.initState();
   }
@@ -59,9 +52,9 @@ class _ScreenTorchState extends State<ScreenTorch> {
       SystemUiOverlay.bottom,
     ]);
     Wakelock.disable();
-    if (isPro.isPro.value != true) {
-      AdServices().showInterstitialAd(isLoaded, () {
-        setState(() {});
+    if (isLoaded) {
+      AdServices().showInterstitialAd(() {
+        AdServices().interstitialAdLoad();
       });
     }
     super.dispose();

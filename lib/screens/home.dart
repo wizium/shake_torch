@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,7 +17,6 @@ GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 bool isBackgroundOn = false;
 bool isSosOn = false;
 bool? isTorchOn = false;
-bool isLoaded = false;
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -41,13 +38,8 @@ class _HomePageState extends State<HomePage> {
         notificationPermission(context);
       });
     });
-    if (isPro.isPro.value != true) {
-      AdServices().interstitialAdLoad(
-          interstitialAdId: AdServices.interstitialAdUnitId,
-          callback: () {
-            isLoaded = true;
-            setState(() {});
-          });
+    if (!isLoaded) {
+      AdServices().interstitialAdLoad();
     }
     super.initState();
   }
@@ -56,42 +48,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.dialog(
-          AlertDialog(
-            title: const Text("Are you sure?\nDo you want to exit?"),
-            icon: const Icon(Icons.close),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: const Text("No"),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (isPro.isPro.value != true) {
-                    if (isLoaded) {
-                      UnityAds.showVideoAd(
-                        placementId: AdServices.interstitialAdUnitId,
-                        onComplete: (placementId) {
-                          SystemNavigator.pop();
-                        },
-                        onSkipped: (placementId) {
-                          SystemNavigator.pop();
-                        },
-                      );
-                    } else {
-                      SystemNavigator.pop();
-                    }
-                  } else {
-                    SystemNavigator.pop();
-                  }
-                },
-                child: const Text("Yes"),
-              )
-            ],
-          ),
-        );
+        if (isLoaded) {
+          await AdServices().showInterstitialAd(() {
+            SystemNavigator.pop();
+          });
+        } else {
+          SystemNavigator.pop();
+        }
         return false;
       },
       child: Scaffold(
@@ -117,123 +80,22 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () async {
-                      setState(() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const ScreenTorch();
-                            },
-                          ),
-                        );
-                      });
-                    },
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Image.asset(
-                          "assets/screenGlow.png",
-                          height: 145,
-                          width: 145,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Card(
-                    child: IconButton(
-                      onPressed: () async {
-                        torchController.initialize();
-                        await torchController.toggle();
-                        isTorchOn = await torchController.isTorchActive;
-                        setState(() {});
-                      },
-                      icon: Icon(
-                        isTorchOn!
-                            ? Icons.flashlight_on_rounded
-                            : Icons.flashlight_off_rounded,
-                        size: 150,
-                        color: isTorchOn! ? Colors.blue : null,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * .08,
-                  bottom: MediaQuery.of(context).size.height * .02,
-                ),
-                child: Card(
-                  child: ListTile(
-                    subtitle: const Text(
-                      "Toggle Shake detection",
-                    ),
-                    subtitleTextStyle: Theme.of(context).textTheme.titleLarge,
-                    title: const Text(
-                      "Shake",
-                    ),
-                    titleTextStyle: Theme.of(context).textTheme.headlineLarge,
-                    trailing: Switch(
-                      value: isBackgroundOn,
-                      onChanged: (value) async {
-                        isBackgroundOn = value;
-                        setState(() {});
-                        if (!isBackgroundOn) {
-                          flutterBackgroundService.invoke("terminate");
-                        } else {
-                          try {
-                            await flutterBackgroundService.startService();
-                            flutterBackgroundService.invoke("start", {
-                              "threshold": threshold! + .1,
-                              "background": background,
-                              "auto": auto
-                            });
-                          } catch (e) {
-                            alarmPermission(context).then(
-                                (value) => notificationPermission(context));
-                          }
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  subtitle: const Text("Emergency sos pattern"),
-                  subtitleTextStyle: Theme.of(context).textTheme.titleLarge,
-                  title: const Text(
-                    "SOS",
-                  ),
-                  titleTextStyle: Theme.of(context).textTheme.headlineLarge,
-                  trailing: Switch(
-                    onChanged: (value) {
-                      isSosOn = value;
-                      toggleSos(isSosOn, callbackIntent: () {
-                        setState(() {});
-                      });
+        body: OrientationBuilder(
+          builder: (context, orientation) {
+            return orientation == Orientation.portrait
+                ? homeBody(context, () {
+                    setState(() {});
+                  })
+                : SingleChildScrollView(
+                    child: homeBody(context, () {
                       setState(() {});
-                    },
-                    value: isSosOn,
-                  ),
-                ),
-              ),
-            ],
-          ),
+                    }),
+                  );
+          },
         ),
-        bottomNavigationBar: Obx(() {
-          return isPro.isPro.value != true
-              ? UnityBannerAd(
+        bottomNavigationBar: isPro.isPro.value
+            ? Obx(() {
+                return UnityBannerAd(
                   size: BannerSize.standard,
                   placementId: AdServices.bannerAdUnitId,
                   onLoad: (placementId) {
@@ -244,10 +106,123 @@ class _HomePageState extends State<HomePage> {
                       "$placementId is failed to load for $errorMessage",
                     );
                   },
-                )
-              : const SizedBox();
-        }),
+                );
+              })
+            : null,
       ),
     );
   }
+}
+
+homeBody(context, VoidCallback callback) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const ScreenTorch();
+                  },
+                ),
+              );
+            },
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
+                  "assets/screenGlow.png",
+                  height: 145,
+                  width: 145,
+                ),
+              ),
+            ),
+          ),
+          Card(
+            child: IconButton(
+              onPressed: () async {
+                torchController.initialize();
+                await torchController.toggle();
+                isTorchOn = await torchController.isTorchActive;
+                callback();
+              },
+              icon: Icon(
+                isTorchOn!
+                    ? Icons.flashlight_on_rounded
+                    : Icons.flashlight_off_rounded,
+                size: 150,
+                color: isTorchOn! ? Colors.blue : null,
+              ),
+            ),
+          ),
+        ],
+      ),
+      Padding(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height * .08,
+          bottom: MediaQuery.of(context).size.height * .02,
+        ),
+        child: Card(
+          child: ListTile(
+            subtitle: const Text(
+              "Toggle Shake detection",
+            ),
+            subtitleTextStyle: Theme.of(context).textTheme.titleLarge,
+            title: const Text(
+              "Shake",
+            ),
+            titleTextStyle: Theme.of(context).textTheme.headlineLarge,
+            trailing: Switch(
+              value: isBackgroundOn,
+              onChanged: (value) async {
+                isBackgroundOn = value;
+                callback();
+                if (!isBackgroundOn) {
+                  flutterBackgroundService.invoke("terminate");
+                } else {
+                  try {
+                    await flutterBackgroundService.startService();
+                    flutterBackgroundService.invoke("start", {
+                      "threshold": threshold! + .1,
+                      "background": background,
+                      "auto": auto
+                    });
+                  } catch (e) {
+                    alarmPermission(context)
+                        .then((value) => notificationPermission(context));
+                  }
+                }
+              },
+            ),
+          ),
+        ),
+      ),
+      Card(
+        child: ListTile(
+          subtitle: const Text("Emergency sos pattern"),
+          subtitleTextStyle: Theme.of(context).textTheme.titleLarge,
+          title: const Text(
+            "SOS",
+          ),
+          titleTextStyle: Theme.of(context).textTheme.headlineLarge,
+          trailing: Switch(
+            onChanged: (value) {
+              isSosOn = value;
+              toggleSos(isSosOn, callbackIntent: () {
+                callback();
+              });
+              callback();
+            },
+            value: isSosOn,
+          ),
+        ),
+      ),
+    ],
+  );
 }

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shake_torch/Functions/subscription_check.dart';
+import 'package:shake_torch/services/ad_services.dart';
 import '/main.dart';
 import '/screens/home.dart';
 import '/Functions/login.dart';
@@ -40,13 +41,14 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       }
     });
+    AdServices().interstitialAdLoad();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.tertiary,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: Get.width * .05,

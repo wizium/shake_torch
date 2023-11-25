@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shake_torch/screens/premium_purchase.dart';
-import '../services/ad_services.dart';
+import '/services/ad_services.dart';
 import '/Functions/data_init.dart';
 import '/Functions/terminated_run.dart';
 import '/widgets/custom_list_tiles.dart';
@@ -10,7 +10,6 @@ import '/main.dart';
 
 bool? background;
 bool? auto;
-bool isLoaded = false;
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -22,23 +21,17 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
-    if (isPro.isPro.value != true) {
-      AdServices().interstitialAdLoad(
-          interstitialAdId: AdServices.interstitialAdUnitId,
-          callback: () {
-            setState(() {
-              isLoaded = true;
-            });
-          });
+    if (!isLoaded) {
+      AdServices().interstitialAdLoad();
     }
     super.initState();
   }
 
   @override
   void dispose() {
-    if (isPro.isPro.value != true) {
-      AdServices().showInterstitialAd(isLoaded, () {
-        setState(() {});
+    if (isLoaded) {
+      AdServices().showInterstitialAd(() {
+        AdServices().interstitialAdLoad();
       });
     }
     super.dispose();
@@ -48,13 +41,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(
-              Icons.verified,
-              color: Colors.amber,
-            ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await sharedPreferences.setBool(
+                  "dark", themeController.dark.value);
+              await sharedPreferences.setDouble("sosDelay", sosDelay!);
+              await sharedPreferences.setDouble("threshold", threshold!);
+              await sharedPreferences.setBool("background", background!);
+              await sharedPreferences.setBool("auto", auto!);
+              Get.changeThemeMode(
+                themeController.dark.value ? ThemeMode.dark : ThemeMode.light,
+              );
+              flutterBackgroundService.invoke("save", {
+                "threshold": threshold! + .1,
+                "background": background,
+                "auto": auto
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    "Saved successfully",
+                  ),
+                ),
+              );
+            },
+            child: const Text("Save"),
           ),
         ],
         title: const Text(
@@ -66,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 "Shake service Configurations",
@@ -80,14 +92,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   label: threshold.toString(),
                   onChanged: (value) async {
                     threshold = value;
-
                     setState(() {});
                   },
                   max: 15,
                 ),
               ),
               SizedBox(
-                height: Get.height * .55,
+                height: Get.height * .6,
                 child: Stack(
                   children: [
                     Column(
@@ -172,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 );
                               },
                               child: Container(
-                                height: Get.height * .55,
+                                height: double.infinity,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(
                                     20,
@@ -185,7 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 child: Center(
                                   child: Icon(
                                     Icons.workspace_premium_outlined,
-                                    color: Colors.amber.withOpacity(.3),
+                                    color: Colors.red.withOpacity(.3),
                                     size: Get.height * .3,
                                   ),
                                 ),
@@ -194,49 +205,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           : const SizedBox();
                     }),
                   ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: Get.height * .02),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(
-                      Theme.of(context).colorScheme.onInverseSurface,
-                    ),
-                    textStyle: MaterialStatePropertyAll(
-                      Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    fixedSize: MaterialStatePropertyAll(
-                      Size(
-                        Get.height * .25,
-                        Get.width * .15,
-                      ),
-                    ),
-                  ),
-                  onPressed: () async {
-                    await sharedPreferences.setBool(
-                        "dark", themeController.dark.value);
-                    await sharedPreferences.setDouble("sosDelay", sosDelay!);
-                    await sharedPreferences.setDouble("threshold", threshold!);
-                    await sharedPreferences.setBool("background", background!);
-                    await sharedPreferences.setBool("auto", auto!);
-                    Get.changeThemeMode(themeController.dark.value
-                        ? ThemeMode.dark
-                        : ThemeMode.light);
-                    flutterBackgroundService.invoke("save", {
-                      "threshold": threshold! + .1,
-                      "background": background,
-                      "auto": auto
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Saved successfully",
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text("Save"),
                 ),
               ),
             ],
