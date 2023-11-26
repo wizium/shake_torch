@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:shake_torch/main.dart';
 import '/services/ad_services.dart';
 import '/widgets/Home_Drawer.dart';
@@ -94,20 +93,18 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         bottomNavigationBar: isPro.isPro.value
-            ? Obx(() {
-                return UnityBannerAd(
-                  size: BannerSize.standard,
-                  placementId: AdServices.bannerAdUnitId,
-                  onLoad: (placementId) {
-                    debugPrint("$placementId is loaded");
-                  },
-                  onFailed: (placementId, error, errorMessage) {
-                    debugPrint(
-                      "$placementId is failed to load for $errorMessage",
-                    );
-                  },
-                );
-              })
+            ? UnityBannerAd(
+                size: BannerSize.standard,
+                placementId: AdServices.bannerAdUnitId,
+                onLoad: (placementId) {
+                  debugPrint("$placementId is loaded");
+                },
+                onFailed: (placementId, error, errorMessage) {
+                  debugPrint(
+                    "$placementId is failed to load for $errorMessage",
+                  );
+                },
+              )
             : null,
       ),
     );
@@ -138,8 +135,8 @@ homeBody(context, VoidCallback callback) {
                 padding: const EdgeInsets.all(10.0),
                 child: Image.asset(
                   "assets/screenGlow.png",
-                  height: 145,
-                  width: 145,
+                  height: 150,
+                  width: 150,
                 ),
               ),
             ),
