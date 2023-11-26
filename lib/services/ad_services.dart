@@ -3,7 +3,7 @@ import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '/main.dart';
 
 class AdServices {
-  static String appId = "5481389";
+  static String appId = "5431494";
   static String bannerAdUnitId = "Banner_Android";
   static String interstitialAdUnitId = "Interstitial_Android";
 
