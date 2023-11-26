@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                   );
           },
         ),
-        bottomNavigationBar: isPro.isPro.value
+        bottomNavigationBar: !isPro.isPro.value
             ? UnityBannerAd(
                 size: BannerSize.standard,
                 placementId: AdServices.bannerAdUnitId,
