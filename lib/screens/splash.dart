@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shake_torch/Functions/subscription_check.dart';
 import 'package:shake_torch/services/ad_services.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '/main.dart';
 import '/screens/home.dart';
 import '/Functions/login.dart';
@@ -18,6 +19,12 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    UnityAds.init(
+      testMode: false,
+      gameId: AdServices.appId,
+      onComplete: () => debugPrint("Unity gameId is Initialized"),
+      onFailed: (error, errorMessage) => debugPrint(errorMessage),
+    );
     Timer(const Duration(seconds: 2), () async {
       try {
         final Timestamp endDate = Timestamp.fromDate(

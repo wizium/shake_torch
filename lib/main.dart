@@ -7,8 +7,6 @@ import '/StateManagement/get_controller.dart';
 import '/firebase_options.dart';
 import '/screens/splash.dart';
 import '/services/purchases.dart';
-import 'services/ad_services.dart';
-import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'Functions/data_init.dart';
 import 'Theme/dark_theme.dart';
 import 'Theme/light_theme.dart';
@@ -29,13 +27,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await UnityAds.init(
-    testMode: false,
-    gameId: AdServices.appId,
-    onComplete: () => debugPrint("Unity gameId is Initialized"),
-    onFailed: (error, errorMessage) => debugPrint(errorMessage),
-  );
-
   await serviceInitializer();
   sharedPreferences = await SharedPreferences.getInstance();
 
