@@ -137,7 +137,7 @@ class HomeDrawerState extends State<HomeDrawer> {
                         showAboutDialog(
                           context: context,
                           applicationName: "Shake Torch",
-                          applicationVersion: "1.0.3",
+                          applicationVersion: "1.0.4+10",
                           applicationIcon: Image.asset(
                             "assets/AppIcon.png",
                             height: 50,
