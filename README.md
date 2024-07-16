@@ -15,9 +15,6 @@ Welcome to the Shake to Torch and SOS Flutter app! This feature-rich app allows 
 3. **flutter_background_service:** Version 5.0.1
    - Ensures the shake detection works even when the app is terminated, providing a seamless experience.
 
-4. **dynamic_colors:** Version (Your preferred version)
-   - Provides an Android 12-like dynamic adaptive theme for a visually appealing user interface.
-
 ## Getting Started
 
 To get started with the Shake to Torch and SOS Flutter app featuring toggle switches, follow these steps:

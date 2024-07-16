@@ -11,11 +11,8 @@ late PurchaseParam purchaseParam;
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 listenToPurchase(List<PurchaseDetails> purchaseDetails) async {
   for (PurchaseDetails element in purchaseDetails) {
-    if (element.status == PurchaseStatus.pending) {
-      debugPrint("Purchase pending");
-    } else if (element.status == PurchaseStatus.error) {
-      debugPrint("Error Buying");
-    } else if (element.status == PurchaseStatus.purchased) {
+    if (element.status == PurchaseStatus.purchased) {
+    
       Timestamp? endDate;
       if (purchaseParam.productDetails.id == products[1].id) {
         endDate = Timestamp.fromDate(
@@ -47,7 +44,6 @@ listenToPurchase(List<PurchaseDetails> purchaseDetails) async {
           ),
         ),
       );
-      debugPrint("purchased");
     }
   }
 }
@@ -57,8 +53,6 @@ initStore(VoidCallback callback) async {
       await inAppPurchase.queryProductDetails(kProductIds);
   if (productDetailsResponse.error == null) {
     products = productDetailsResponse.productDetails;
-  } else {
-    debugPrint(productDetailsResponse.error.toString());
   }
   callback();
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shake_torch/screens/home.dart';
@@ -16,92 +17,84 @@ class LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign in to Continue'),
         actions: [
-          TextButton(
-            onPressed: () {
-              auth.signOut();
-              GoogleSignIn().signOut();
-              Get.offAll(
-                const HomePage(),
-              );
-            },
-            child: Text(
-              "Skip",
-              style: Theme.of(context).textTheme.bodyLarge,
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                auth.signOut();
+                GoogleSignIn().signOut();
+                Get.offAll(() => const HomePage());
+              },
+              icon: const FaIcon(FontAwesomeIcons.arrowRightLong),
+              label: const Text("Skip"),
             ),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: EdgeInsets.only(top: Get.height * .03),
-              child: Text(
-                "Welcome to Shake Torch",
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-            ),
+            const SizedBox(),
             Center(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: Get.height * .15,
-                ),
-                child: Container(
-                  height: Get.height * .3,
-                  width: Get.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/AppIcon.png'),
+              child: Column(
+                children: [
+                  Image(
+                    image: const AssetImage('assets/AppIcon.png'),
+                    height: Get.height * .3,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Text(
+                      "ShakeTorch",
+                      style: Theme.of(context).textTheme.headlineLarge!.merge(
+                            TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      "Lets get started",
+                      style: Theme.of(context).textTheme.headlineLarge!.merge(
+                            TextStyle(
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary,
+                            ),
+                          ),
+                    ),
+                  )
+                ],
               ),
             ),
             Padding(
               padding: EdgeInsets.only(
-                top: Get.width * .35,
+                top: Get.height * .15,
               ),
-              child: InkWell(
-                onTap: () async {
-                  await SignIn().googleSignIn();
-                },
-                child: Container(
-                  height: Get.height * .08,
-                  width: Get.width * .9,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Continue with Google",
-                          style:
-                              Theme.of(context).textTheme.headlineSmall!.merge(
-                                    const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ),
-                          child: Icon(
-                            Icons.login_outlined,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
+              child: SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await SignIn().googleSignIn();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/google.png",
+                        height: 30,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        "Signin with Google",
+                        style: Theme.of(context).textTheme.titleMedium!,
+                      ),
+                    ],
                   ),
                 ),
               ),

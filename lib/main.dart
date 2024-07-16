@@ -8,11 +8,8 @@ import '/firebase_options.dart';
 import '/screens/splash.dart';
 import '/services/purchases.dart';
 import 'Functions/data_init.dart';
-import 'Theme/dark_theme.dart';
-import 'Theme/light_theme.dart';
 import 'Functions/terminated_run.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 late StreamSubscription inAppPurchaseSubscription;
@@ -24,17 +21,10 @@ late SharedPreferences sharedPreferences;
 InAppPurchase inAppPurchase = InAppPurchase.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   await serviceInitializer();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   sharedPreferences = await SharedPreferences.getInstance();
-
-  runApp(
-    const BetterFeedback(
-      child: MyApp(),
-    ),
-  );
+  runApp(const BetterFeedback(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -55,11 +45,6 @@ class _MyAppState extends State<MyApp> {
       onDone: () {
         inAppPurchaseSubscription.cancel();
       },
-      onError: (e) {
-        debugPrint(
-          "Purchase stream got error $e",
-        );
-      },
     );
     initStore(() {
       setState(() {});
@@ -71,18 +56,70 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
-        return GetMaterialApp(
-          themeMode:
-              themeController.dark.value ? ThemeMode.dark : ThemeMode.light,
-          title: "Shake torch(FlashLight)",
-          theme: lightTheme(lightDynamic, context),
-          darkTheme: darkTheme(darkDynamic, context),
-          home: const SplashScreen(),
-          debugShowCheckedModeBanner: false,
-        );
-      },
+    return GetMaterialApp(
+      themeMode: themeController.dark.value ? ThemeMode.dark : ThemeMode.light,
+      title: "Shake torch",
+      theme: ThemeData(
+        fontFamily: "Margarine",
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFcc7c36),
+          brightness: Brightness.light,
+        ).copyWith(
+          primary: const Color(0xFFcc7c36),
+        ),
+      ).copyWith(
+        listTileTheme: ListTileThemeData(
+          iconColor: ColorScheme.fromSeed(
+            seedColor: const Color(0xFFcc7c36),
+          ).inversePrimary,
+        ),
+        switchTheme: SwitchThemeData(
+          trackColor: WidgetStatePropertyAll(
+            ColorScheme.fromSeed(
+              seedColor: const Color(0xFFcc7c36),
+            ).inversePrimary,
+          ),
+          trackOutlineWidth: const WidgetStatePropertyAll(0),
+          trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+          thumbColor: WidgetStatePropertyAll(
+            ColorScheme.fromSeed(seedColor: const Color(0xFFcc7c36)).primary,
+          ),
+          thumbIcon: const WidgetStatePropertyAll(
+            Icon(
+              Icons.abc,
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+      ),
+      darkTheme: ThemeData(
+        fontFamily: "Margarine",
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFcc7c36),
+          brightness: Brightness.dark,
+        ),
+      ).copyWith(
+        switchTheme: SwitchThemeData(
+          trackColor: WidgetStatePropertyAll(
+            ColorScheme.fromSeed(
+              seedColor: const Color(0xFFcc7c36),
+            ).inversePrimary,
+          ),
+          trackOutlineWidth: const WidgetStatePropertyAll(0),
+          trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+          thumbColor: WidgetStatePropertyAll(
+            ColorScheme.fromSeed(seedColor: const Color(0xFFcc7c36)).primary,
+          ),
+          thumbIcon: const WidgetStatePropertyAll(
+            Icon(
+              Icons.abc,
+              color: Colors.transparent,
+            ),
+          ),
+        ),
+      ),
+      home: const SplashScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

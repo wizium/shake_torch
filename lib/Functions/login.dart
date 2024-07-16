@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shake_torch/main.dart';
@@ -13,13 +13,9 @@ import 'subscription_check.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 Future<void> signInCheck() async {
   if (_auth.currentUser == null) {
-    Get.offAll(
-      () => const LoginScreen(),
-    );
+    Get.offAll(() => const LoginScreen());
   } else {
-    Get.offAll(
-      () => const HomePage(),
-    );
+    Get.offAll(() => const HomePage());
   }
 }
 
@@ -46,26 +42,17 @@ class SignIn {
           "endDate",
           endDate.toDate().toString(),
         );
-        if (kDebugMode) {
-          print("\nendDate: ${endDate.toDate().toString()}\n");
-        }
         subscriptionCheck(endDate);
       }).onError((error, stackTrace) {
-        debugPrint(error.toString());
         sharedPreferences.setBool("isPro", false);
         isPro.init();
       });
       await signInCheck();
-      Get.snackbar('Done', 'Sign in successful');
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar('Error', e.message!);
-      auth.signOut();
-      GoogleSignIn().signOut();
+      Fluttertoast.showToast(msg: 'Sign in successful');
     } catch (e) {
       auth.signOut();
       GoogleSignIn().signOut();
-      debugPrint(e.toString());
-      Get.snackbar('Error', '$e');
+      Fluttertoast.showToast(msg: "Something went wrong");
     }
   }
 }

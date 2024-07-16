@@ -1,10 +1,6 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'dart:ui';
-import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart'
-    show AndroidServiceInstance;
+import 'package:shake_torch/Functions/haptic.dart';
 import '/Functions/sos.dart';
 import 'package:shake/shake.dart';
 
@@ -29,15 +25,15 @@ Future<void> onStart(ServiceInstance service) async {
 
       shake = ShakeDetector.waitForStart(
         onPhoneShake: () async {
+          Haptic.vibrate();
           torchController.initialize();
           await torchController.toggle();
           service
               .invoke("toggled", {"on": await torchController.isTorchActive});
         },
-        shakeThresholdGravity: event["threshold"],
+        shakeThresholdGravity: event["threshold"]+.1,
       );
 
-      debugPrint("${event["threshold"]}\n");
       shake!.startListening();
     });
     service.on("save").listen((event) async {
@@ -51,14 +47,14 @@ Future<void> onStart(ServiceInstance service) async {
 
       shake = ShakeDetector.waitForStart(
         onPhoneShake: () async {
+          Haptic.vibrate();
           torchController.initialize();
           await torchController.toggle();
           service
               .invoke("toggled", {"on": await torchController.isTorchActive});
         },
-        shakeThresholdGravity: event["threshold"],
+        shakeThresholdGravity: event["threshold"]+.1,
       );
-      debugPrint("${event["threshold"]}\n");
       shake!.startListening();
     });
   }

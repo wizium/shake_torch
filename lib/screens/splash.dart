@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_arc_text/flutter_arc_text.dart';
 import 'package:get/route_manager.dart';
 import 'package:shake_torch/Functions/subscription_check.dart';
 import 'package:shake_torch/services/ad_services.dart';
@@ -16,26 +18,45 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ],
+    );
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    _animation = Tween<double>(begin: 0.85, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _controller.forward();
+
     UnityAds.init(
       testMode: false,
       gameId: AdServices.appId,
-      onComplete: () => debugPrint("Unity gameId is Initialized"),
-      onFailed: (error, errorMessage) => debugPrint(errorMessage),
     );
-    Timer(const Duration(seconds: 2), () async {
+
+    Timer(const Duration(seconds: 3), () async {
       try {
         final Timestamp endDate = Timestamp.fromDate(
           DateTime.parse(
             sharedPreferences.getString("endDate")!,
           ),
         );
-        debugPrint(endDate.toDate().toString());
         subscriptionCheck(endDate);
       } catch (e) {
-        debugPrint(e.toString());
         sharedPreferences.setBool("isPro", false);
       }
       final isFirstTime = sharedPreferences.getBool("isFirstTime");
@@ -43,13 +64,17 @@ class _SplashScreenState extends State<SplashScreen> {
         await sharedPreferences.setBool("isFirstTime", false);
         signInCheck();
       } else {
-        Get.offAll(
-          () => const HomePage(),
-        );
+        Get.offAll(() => const HomePage());
       }
     });
+
     AdServices().interstitialAdLoad();
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,38 +82,62 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: Get.width * .05,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: Get.height * .15,
-              ),
-              child: Center(
-                child: Image.asset(
-                  "assets/AppIcon.png",
-                  height: Get.height * .35,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: Get.height * .1,
-              ),
-              child: Text(
-                "Welcome To shake Torch",
-                style: Theme.of(context).textTheme.headlineLarge!.merge(
-                      TextStyle(
-                        color: Theme.of(context).colorScheme.surface,
+        padding: const EdgeInsets.all(10),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: Get.height * .15,
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Center(
+                child: ScaleTransition(
+                  scale: _animation,
+                  child: CircleAvatar(
+                    radius: 130,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .inversePrimary
+                        .withOpacity(.3),
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(context)
+                          .colorScheme
+                          .inversePrimary
+                          .withOpacity(.5),
+                      radius: 120,
+                      child: CircleAvatar(
+                        radius: 110,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.inversePrimary,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: const Image(
+                            image: AssetImage(
+                              "assets/AppIcon.png",
+                            ),
+                          ).image,
+                          radius: 100,
+                        ),
                       ),
                     ),
+                  ),
+                ),
               ),
-            ),
-          ],
+              FadeTransition(
+                opacity: _animation,
+                child: ArcText(
+                  radius: 140,
+                  startAngle: 5.4,
+                  text: "Welcome to Shake torch",
+                  textStyle: Theme.of(context).textTheme.headlineSmall!.merge(
+                        TextStyle(
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
+                      ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

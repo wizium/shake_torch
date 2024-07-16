@@ -1,16 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:feedback/feedback.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shake_torch/Functions/login.dart';
 import 'package:shake_torch/main.dart';
 import 'package:shake_torch/screens/premium_purchase.dart';
 import 'package:shake_torch/screens/settings.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../Functions/feedback.dart';
+
 FirebaseAuth auth = FirebaseAuth.instance;
 
 class HomeDrawer extends StatefulWidget {
@@ -23,195 +25,228 @@ class HomeDrawer extends StatefulWidget {
 class HomeDrawerState extends State<HomeDrawer> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Drawer(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    return Drawer(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      child: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.only(
+            left: 5,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                children: [
-                  if (auth.currentUser != null)
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 10,
-                      ),
-                      title: Text(auth.currentUser!.displayName!),
-                      subtitle: Text(
-                        auth.currentUser!.email!,
-                      ),
-                      trailing: Obx(() {
-                        return Icon(
-                          isPro.isPro.value
-                              ? Icons.workspace_premium_rounded
-                              : null,
-                          color: Theme.of(context).colorScheme.primary,
-                        );
-                      }),
-                      onTap: null,
-                      leading: Image(
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.account_circle_rounded,
-                            size: Get.height * .05,
-                          );
-                        },
-                        height: Get.height * .1,
-                        image: NetworkImage(
-                          auth.currentUser!.photoURL!,
-                        ),
-                      ),
-                    )
-                  else
-                    Card(
-                      child: ListTile(
-                        onTap: () {
-                          signInCheck();
-                        },
-                        leading: const Icon(
-                          Icons.account_circle_rounded,
-                          size: 40,
-                        ),
-                        title: const Center(
-                          child: Text(
-                            "Login",
-                          ),
-                        ),
-                      ),
+              if (auth.currentUser != null)
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 10,
                     ),
-                  const Divider(),
-                  Obx(() {
-                    return isPro.isPro.value != true
-                        ? Card(
-                            child: ListTile(
-                              leading: const Icon(
-                                Icons.workspace_premium_rounded,
-                                size: 40,
-                              ),
-                              title: const Text("Become ViP"),
-                              onTap: () {
-                                Get.to(
-                                  const PurchasePro(),
-                                );
-                              },
-                            ),
-                          )
-                        : const SizedBox();
-                  }),
-                  Card(
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.settings_suggest_rounded,
-                        size: 40,
-                      ),
-                      title: const Text("Preferences"),
-                      onTap: () {
-                        Get.to(const SettingsScreen());
-                      },
+                    title: Text(auth.currentUser!.displayName!),
+                    subtitle: Text(
+                      auth.currentUser!.email!,
+                    ),
+                    trailing: Obx(() {
+                      return Icon(
+                        isPro.isPro.value
+                            ? Icons.workspace_premium_rounded
+                            : null,
+                        color: Theme.of(context).colorScheme.primary,
+                      );
+                    }),
+                    onTap: null,
+                    leading: CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(
+                      auth.currentUser!.photoURL!,
+                      maxWidth: 60,
+                    )),
+                  ),
+                )
+              else
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      signInCheck();
+                    },
+                    leading: FaIcon(
+                      FontAwesomeIcons.solidUser,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                    title: const Center(
+                      child: Text("Login"),
                     ),
                   ),
-                  Card(
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.feedback_rounded,
-                        size: 40,
+                ),
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                child: Column(
+                  children: [
+                    const Opacity(
+                      opacity: 0,
+                      child: Divider(
+                        height: 2,
                       ),
+                    ),
+                    Obx(() {
+                      return isPro.isPro.value != true
+                          ? Column(
+                              children: [
+                                ListTile(
+                                  leading: FaIcon(
+                                    FontAwesomeIcons.crown,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .inversePrimary,
+                                  ),
+                                  title: const Text("Become VIP"),
+                                  subtitle: const Text("Unlock all features"),
+                                  onTap: () {
+                                    Get.to(() => const PurchasePro());
+                                  },
+                                  trailing: const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 20,
+                                  ),
+                                ),
+                                const Divider(
+                                  height: 2,
+                                ),
+                              ],
+                            )
+                          : const SizedBox();
+                    }),
+                    ListTile(
+                      leading: FaIcon(
+                        FontAwesomeIcons.gear,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                      title: const Text("Preferences"),
+                      subtitle: const Text("Menage the app settings"),
+                      trailing:
+                          const Icon(Icons.arrow_forward_ios_rounded, size: 20),
+                      onTap: () {
+                        Get.to(() => const SettingsScreen());
+                      },
+                    ),
+                    const Divider(
+                      height: 2,
+                    ),
+                    ListTile(
+                      onTap: () async {
+                        await launchUrl(
+                          Uri.parse(
+                            "https://play.google.com/store/apps/details?id=com.wizium.shake_torch&hl=en",
+                          ),
+                        );
+                      },
+                      leading: FaIcon(
+                        FontAwesomeIcons.solidHeart,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                      title: const Text("Rate Us"),
+                      subtitle: const Text("Rate us on PlayStore"),
+                      trailing:
+                          const Icon(Icons.arrow_forward_ios_rounded, size: 20),
+                    ),
+                    const Divider(
+                      height: 2,
+                    ),
+                    ListTile(
+                      leading: FaIcon(
+                        FontAwesomeIcons.solidMessage,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                      subtitle: const Text("Report problems"),
                       title: const Text("Feedback"),
                       onTap: () async {
                         BetterFeedback.of(context).show((feedback) async {
-                          sendEmail(feedback.screenshot, feedback.text);
+                          sendEmail(
+                            image: feedback.screenshot,
+                            messageText: feedback.text,
+                          );
                         });
                       },
+                      trailing:
+                          const Icon(Icons.arrow_forward_ios_rounded, size: 20),
                     ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.info_outline_rounded,
-                        size: 40,
-                      ),
-                      title: const Text("About app"),
-                      onTap: () {
-                        showAboutDialog(
-                          context: context,
-                          applicationName: "Shake Torch",
-                          applicationVersion: "1.0.4+10",
-                          applicationIcon: Image.asset(
-                            "assets/AppIcon.png",
-                            height: 50,
-                            width: 50,
-                          ),
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                text: "Developed by: ",
-                                style: Theme.of(context).textTheme.bodyLarge,
-                                children: [
-                                  TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () async {
-                                        if (!await launchUrl(
-                                          Uri.parse(
-                                            "https://github.com/AbubakarL",
-                                          ),
-                                        )) {
-                                          throw Exception('Could not launch');
-                                        }
-                                      },
-                                    text: "Muhammad Abubakar\n",
-                                    style: const TextStyle(
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                  const TextSpan(
-                                    text: "Contact us at ",
-                                  ),
-                                  TextSpan(
-                                    text: "Qsssoftnic@gmail.com ",
-                                    style: const TextStyle(
-                                      color: Colors.blue,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        launchUrl(
-                                          Uri.parse(
-                                            "mailto:Qsssoftnic@gmail.com",
-                                          ),
-                                        );
-                                      },
-                                  ),
-                                  const TextSpan(
-                                      text: "for Business queries.\n"),
-                                  TextSpan(
-                                    text: "Privacy Policy",
-                                    style: const TextStyle(
-                                      color: Colors.blue,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        launchUrl(
-                                          Uri.parse(
-                                            "https://sites.google.com/view/shaketorch",
-                                          ),
-                                        );
-                                      },
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                    const Divider(
+                      height: 2,
+                    ),
+                    ListTile(
+                      onTap: () async {
+                        await Share.share(
+                          "Hay there i am using Shake Torch.\nIts handy to use it.\n\nDownload it here: https://play.google.com/store/apps/details?id=com.wizium.shake_torch&hl=en",
                         );
                       },
+                      leading: FaIcon(
+                        FontAwesomeIcons.share,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                      title: const Text("Share"),
+                      subtitle: const Text("Share this app"),
+                      trailing:
+                          const Icon(Icons.arrow_forward_ios_rounded, size: 20),
                     ),
-                  ),
-                  const Divider(),
-                ],
+                    const Opacity(
+                      opacity: 0,
+                      child: Divider(
+                        height: 2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                child: ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.circleInfo),
+                  title: const Text("About app"),
+                  onTap: () {
+                    showAboutDialog(
+                      context: context,
+                      applicationName: "Shake Torch",
+                      applicationVersion: "1.1.0+13",
+                      applicationIcon: Image.asset(
+                        "assets/AppIcon.png",
+                        height: 70,
+                        width: 70,
+                      ),
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            launchUrl(
+                              Uri.parse(
+                                "https://sites.google.com/view/shaketorch",
+                              ),
+                            );
+                          },
+                          child: const Text("Privacy Policy"),
+                        )
+                      ],
+                    );
+                  },
+                ),
               ),
               auth.currentUser != null
                   ? Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                       child: ListTile(
+                        leading: const RotatedBox(
+                          quarterTurns: 2,
+                          child: FaIcon(
+                            FontAwesomeIcons.rightFromBracket,
+                          ),
+                        ),
                         onTap: () async {
                           await auth.signOut();
                           await GoogleSignIn().signOut();
@@ -220,11 +255,7 @@ class HomeDrawerState extends State<HomeDrawer> {
                           isPro.init();
                           await signInCheck();
                         },
-                        title: const Center(
-                          child: Text(
-                            "Logout",
-                          ),
-                        ),
+                        title: const Text("Logout"),
                       ),
                     )
                   : const SizedBox(),
