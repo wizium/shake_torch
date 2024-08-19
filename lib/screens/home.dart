@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                   Haptic.vibrate();
                   setState(() {});
                 },
-                assetPath: "assets/AppIcon.png",
+                assetPath: "assets/torch.png",
               ),
               CustomIconButton(
                 isActive: isSosOn,

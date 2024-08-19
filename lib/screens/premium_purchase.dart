@@ -146,7 +146,7 @@ class _PurchaseProState extends State<PurchasePro> {
                                     const FaIcon(
                                       FontAwesomeIcons.solidStar,
                                       color: Colors.white,
-                                      size: 50,
+                                      size: 40,
                                     ),
                                     Column(
                                       mainAxisAlignment:
@@ -225,7 +225,7 @@ class _PurchaseProState extends State<PurchasePro> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     const FaIcon(FontAwesomeIcons.crown,
-                                        color: Colors.white, size: 50),
+                                        color: Colors.white, size: 40),
                                     Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,

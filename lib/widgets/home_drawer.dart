@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
 import 'package:feedback/feedback.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -59,10 +59,10 @@ class HomeDrawerState extends State<HomeDrawer> {
                     }),
                     onTap: null,
                     leading: CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                      auth.currentUser!.photoURL!,
-                      maxWidth: 60,
-                    )),
+                      backgroundImage: FileImage(
+                        File("${tempPath!.path}/avatar.png"),
+                      ),
+                    ),
                   ),
                 )
               else
@@ -213,7 +213,7 @@ class HomeDrawerState extends State<HomeDrawer> {
                     showAboutDialog(
                       context: context,
                       applicationName: "Shake Torch",
-                      applicationVersion: "1.1.0+13",
+                      applicationVersion: "1.1.0+14",
                       applicationIcon: Image.asset(
                         "assets/AppIcon.png",
                         height: 70,

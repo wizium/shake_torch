@@ -113,7 +113,7 @@ class _SplashScreenState extends State<SplashScreen>
                           backgroundColor: Colors.transparent,
                           backgroundImage: const Image(
                             image: AssetImage(
-                              "assets/AppIcon.png",
+                              "assets/appIcon.png",
                             ),
                           ).image,
                           radius: 100,

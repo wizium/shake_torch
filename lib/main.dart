@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:feedback/feedback.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import '/StateManagement/get_controller.dart';
 import '/firebase_options.dart';
 import '/screens/splash.dart';
@@ -19,9 +21,11 @@ IsPro isPro = Get.put(IsPro());
 bool isLoaded = false;
 late SharedPreferences sharedPreferences;
 InAppPurchase inAppPurchase = InAppPurchase.instance;
+Directory? tempPath;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await serviceInitializer();
+  tempPath =await getApplicationDocumentsDirectory();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   sharedPreferences = await SharedPreferences.getInstance();
   runApp(const BetterFeedback(child: MyApp()));

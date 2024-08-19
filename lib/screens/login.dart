@@ -42,9 +42,12 @@ class LoginScreenState extends State<LoginScreen> {
             Center(
               child: Column(
                 children: [
-                  Image(
-                    image: const AssetImage('assets/AppIcon.png'),
-                    height: Get.height * .3,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image(
+                      image: const AssetImage('assets/appIcon.png'),
+                      height: Get.height * .3,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 40),
