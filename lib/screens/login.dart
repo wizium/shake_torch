@@ -45,7 +45,7 @@ class LoginScreenState extends State<LoginScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image(
-                      image: const AssetImage('assets/appIcon.png'),
+                      image: const AssetImage('assets/icon.png'),
                       height: Get.height * .3,
                     ),
                   ),

@@ -62,7 +62,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       themeMode: themeController.dark.value ? ThemeMode.dark : ThemeMode.light,
-      title: "Shake torch",
       theme: ThemeData(
         fontFamily: "Margarine",
         colorScheme: ColorScheme.fromSeed(
